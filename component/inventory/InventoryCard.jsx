@@ -2,10 +2,7 @@ import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 
 export default function InventoryCard({ crop, batch }) {
-  const relatedBatches = batch.filter((b) => b.crop_id === crop.id);
-  const totalQty = relatedBatches.reduce((sum, b) => sum + b.qty, 0);
-  const totalSold = relatedBatches.reduce((sum, b) => sum + b.sold_qty, 0);
-  const remaining = totalQty - totalSold;
+  const remaining = batch.qty - batch.sold_qty;
 
   // Background color based on status
   const cardBackground =

@@ -6,9 +6,9 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        primary: "#bd9e4b" // Overlay Color
+        primary: "#bd9e4b", // Overlay Color
       },
     },
   },
   plugins: [],
-}
+};

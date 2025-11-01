@@ -6,7 +6,7 @@ import ProgressBar from "../ProgressBar";
 const PRIMARY = "#bd9e4b";
 
 export default function CropCard({ crop, batchesSummary, onViewBatches }) {
-  // batchesSummary: { totalQty, totalBatches, counts: { Available, "Expiring Soon", "Sold Out" } }
+  
   return (
     <View style={styles.card}>
       {/* Top row: name and totals */}
