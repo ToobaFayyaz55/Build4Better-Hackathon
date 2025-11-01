@@ -1,7 +1,9 @@
 // component/Layout.jsx
 import { useState } from "react";
 import { View } from "react-native";
+import KisaanPost from "../app/(bulletin)/KisaanPost";
 import Dashboard from "../app/(dashboard)/Dashboard";
+import EquipmentHub from "../app/(equipment)/EquipmentHub";
 import Footer from "./Footer";
 import InventoryScreen from "../app/(inventory)/InventoryScreen";
 
@@ -16,12 +18,12 @@ const Layout = () => {
           return <InventoryScreen />;
       //   case "markets":
       //     return <MarketsScreen />;
-      //   case "equipment":
-      //     return <EquipmentScreen />;
-      //   case "community":
-      //     return <CommunityScreen />;
+      case "equipment":
+        return <EquipmentHub />;
+      case "community":
+        return <KisaanPost />;
       default:
-        return <Dashboard />;
+        return <KisaanPost />;
     }
   };
 
