@@ -1,6 +1,7 @@
 // component/Layout.jsx
 import { useState } from "react";
 import { View } from "react-native";
+import KisaanPost from "../app/(bulletin)/KisaanPost";
 import Dashboard from "../app/(dashboard)/Dashboard";
 import Footer from "./Footer";
 
@@ -11,16 +12,10 @@ const Layout = () => {
     switch (activeTab) {
       case "home":
         return <Dashboard />;
-      //   case "inventory":
-      //     return <AddInventoryPage />;
-      //   case "markets":
-      //     return <MarketsScreen />;
-      //   case "equipment":
-      //     return <EquipmentScreen />;
-      //   case "community":
-      //     return <CommunityScreen />;
+      case "community":
+        return <KisaanPost />;
       default:
-        return <Dashboard />;
+        return <KisaanPost />;
     }
   };
 
