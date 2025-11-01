@@ -1,53 +1,52 @@
 import { Stack } from "expo-router";
-import React from "react";
 import "../global.css";
 
 const _layout = () => {
   return (
-        <Stack>
-          <Stack.Screen
-            name="index"
-            options={{
-              title: "Home (Sign Up/ LogIn)",
-              headerShown: false,
-            }}
-          />          
-          <Stack.Screen
-            name="(dashboard)"
-            options={{
-              title: "Dashoard",
-              headerShown: false,
-            }}
-          />  
-          <Stack.Screen
-            name="(inventory)"
-            options={{
-              title: "Inventory",
-              headerShown: false,
-            }}
-          />  
-          <Stack.Screen
-            name="(equipment)"
-            options={{
-              title: "Equipment",
-              headerShown: false,
-            }}
-          />  
-          <Stack.Screen
-            name="(market)"
-            options={{
-              title: "Market",
-              headerShown: false,
-            }}
-          />  
-          <Stack.Screen
-            name="(bulletin)"
-            options={{
-              title: "Bulletin",
-              headerShown: false,
-            }}
-          />  
-        </Stack>
+    <Stack>
+      <Stack.Screen
+        name="index"
+        options={{
+          title: "Home (Sign Up/ LogIn)",
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="(dashboard)"
+        options={{
+          title: "Dashoard",
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="(inventory)"
+        options={{
+          title: "Inventory",
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="(equipment)"
+        options={{
+          title: "Equipment",
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="(market)"
+        options={{
+          title: "Market",
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="(bulletin)"
+        options={{
+          title: "Bulletin",
+          headerShown: false,
+        }}
+      />
+    </Stack>
   );
 };
 
