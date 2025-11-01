@@ -1,13 +1,12 @@
 import { Stack } from "expo-router";
-import React from "react";
 
 const _layout = () => {
   return (
     <Stack>
       <Stack.Screen
-        name="filename"
+        name="EquipmentHub"
         options={{
-          title: "Page name",
+          title: "My Equipment / میری مشینیں",
           headerShown: false,
         }}
       />
