@@ -35,7 +35,7 @@ yarn-error.*
 
 # typescript
 *.tsbuildinfo
-
+*.env 
 app-example
 
 # generated native folders
@@ -48,3 +48,4 @@ IMPLEMENTATION_SUMMARY.md
 QUICKSTART.md
 README_DASHBOARD.md
 VISUAL_COMPONENT_MAP.md
+keys.js
