@@ -1,4 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
 import { useMemo, useState } from "react";
 import {
   ScrollView,
@@ -141,10 +142,17 @@ export default function InventoryScreen() {
         </View>
 
         <TouchableOpacity
-          style={[styles.addBtn, { backgroundColor: PRIMARY }]}
+          style={{ borderRadius: 12 }}
           onPress={() => setShowModal(true)}
         >
-          <Ionicons name="add" size={20} color="#fff" />
+          <LinearGradient
+            colors={["#bd9e4b", "#fde68a"]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={styles.addBtnGradient}
+          >
+            <Ionicons name="add" size={20} color="#fff" />
+          </LinearGradient>
         </TouchableOpacity>
       </View>
 
@@ -233,7 +241,13 @@ const styles = StyleSheet.create({
   },
   title: { fontSize: 22, fontWeight: "700", color: "#111827" },
   countText: { color: "#6B7280", marginTop: 4 },
-  addBtn: { padding: 10, borderRadius: 12 },
+  addBtnGradient: {
+    padding: 10,
+    borderRadius: 12,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+
   empty: { padding: 20, alignItems: "center" },
   emptyText: { color: "#6B7280" },
 });

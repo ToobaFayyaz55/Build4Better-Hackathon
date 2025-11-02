@@ -7,13 +7,7 @@ import {
   View,
 } from "react-native";
 
-const tabs = [
-  { key: "all", label: "All Posts" },
-  { key: "my", label: "My Posts" },
-  { key: "products", label: "Products" },
-];
-
-export default function TabBar({ selectedTab, setSelectedTab }) {
+export default function TabBar({ selectedTab, setSelectedTab, tabs }) {
   const [tabsReady, setTabsReady] = useState(false);
   const underlineAnim = useRef(new Animated.Value(0)).current;
   const underlineWidthAnim = useRef(new Animated.Value(0)).current;

@@ -105,12 +105,14 @@ export default function PostCard({ post, onEdit, onDelete }) {
 const styles = StyleSheet.create({
   card: {
     backgroundColor: "#fffffa",
+    borderRadius: 14,
     padding: 12,
-    borderRadius: 8,
-    marginVertical: 6,
-    shadowColor: "#0e0d0dff",
-    shadowOpacity: 0.1,
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: "#e5e7eb",
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.12,
     shadowRadius: 4,
     elevation: 3,
   },

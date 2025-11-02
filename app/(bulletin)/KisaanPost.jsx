@@ -1,4 +1,5 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
+import { LinearGradient } from "expo-linear-gradient";
 import { useState } from "react";
 import {
   FlatList,
@@ -11,7 +12,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import CreatePostModal from "../../component/bulletin/CreatePostModal";
 import PostCard from "../../component/bulletin/PostCard";
 import ProductCard from "../../component/bulletin/ProductCard";
-import TabBar from "../../component/bulletin/TabBar";
+import TabBar from "../../component/TabBar";
 import { samplePosts, sampleProducts } from "../../constants/bulletin";
 
 export default function KisaanPost() {
@@ -72,13 +73,20 @@ export default function KisaanPost() {
     <View style={styles.headerRow}>
       <Text style={styles.headerText}>Kisaan Post</Text>
       <TouchableOpacity
-        style={styles.addBtn}
+        style={{ borderRadius: 12 }}
         onPress={() => {
           setEditingPost(null);
           setShowModal(true);
         }}
       >
-        <Ionicons name="add" size={20} color="#fff" />
+        <LinearGradient
+          colors={["#bd9e4b", "#fde68a"]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={styles.addBtnGradient}
+        >
+          <Ionicons name="add" size={20} color="#fff" />
+        </LinearGradient>
       </TouchableOpacity>
     </View>
   );
@@ -86,7 +94,15 @@ export default function KisaanPost() {
   return (
     <SafeAreaView style={styles.container}>
       <Header />
-      <TabBar selectedTab={selectedTab} setSelectedTab={setSelectedTab} />
+      <TabBar
+        selectedTab={selectedTab}
+        setSelectedTab={setSelectedTab}
+        tabs={[
+          { key: "all", label: "All Posts" },
+          { key: "my", label: "My Posts" },
+          { key: "products", label: "Products" },
+        ]}
+      />
       <View style={{ flex: 1, padding: 10 }}>{renderContent()}</View>
 
       <CreatePostModal
@@ -107,10 +123,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: 10,
   },
-  headerText: { fontSize: 22, fontWeight: "600", color: "#111827" },
-  addBtn: {
+  headerText: { fontSize: 22, fontWeight: "700", color: "#111827" },
+  addBtnGradient: {
     padding: 10,
     borderRadius: 12,
-    backgroundColor: "#bd9e4b",
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
