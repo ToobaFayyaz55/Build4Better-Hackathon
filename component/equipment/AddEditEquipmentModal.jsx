@@ -37,7 +37,6 @@ export default function AddEditEquipmentModal({
       setSpecs(equipment.specs || "");
       setImages(equipment.image_url ? [{ uri: equipment.image_url }] : []);
       setStatus(equipment.status || STATUS_OPTIONS[0]);
-      setOwnerName(equipment.owner_name || "");
       setOwnerContact(equipment.owner_contact?.toString() || "");
       setRentedTill(equipment.rent_end || "");
     } else {
@@ -45,7 +44,6 @@ export default function AddEditEquipmentModal({
       setSpecs("");
       setImages([]);
       setStatus(STATUS_OPTIONS[0]);
-      setOwnerName("");
       setOwnerContact("");
       setRentedTill("");
     }
