@@ -27,7 +27,9 @@ export default function EquipmentCard({
       Alert.alert("No contact available");
       return;
     }
-    const phoneNumber = equipment.owner_contact.toString().replace(/[^0-9+]/g, "");
+    const phoneNumber = equipment.owner_contact
+      .toString()
+      .replace(/[^0-9+]/g, "");
     Linking.openURL(`tel:${phoneNumber}`);
   };
 
@@ -61,7 +63,9 @@ export default function EquipmentCard({
       </ScrollView>
 
       {/* Specs / Condition */}
-      <Text style={styles.condition}>{equipment.specs || "No details available"}</Text>
+      <Text style={styles.condition}>
+        {equipment.specs || "No details available"}
+      </Text>
 
       {/* Footer Section */}
       <View style={styles.footer}>
@@ -76,12 +80,6 @@ export default function EquipmentCard({
           </View>
         ) : (
           <View style={styles.othersFooter}>
-            <Text style={styles.owner}>
-              Owner:{" "}
-              <Text style={{ fontWeight: "700" }}>
-                {equipment.owner_name || "N/A"}
-              </Text>
-            </Text>
             <TouchableOpacity onPress={handleContact} style={styles.contactBtn}>
               <Text style={styles.contactText}>Contact</Text>
               <Ionicons
@@ -147,7 +145,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
   },
-  owner: { fontSize: 13, color: "#4B5563" },
   contactBtn: {
     flexDirection: "row",
     alignItems: "center",
@@ -156,5 +153,9 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
     borderRadius: 8,
   },
-  contactText: { color: "#fff", fontWeight: "600", fontSize: 13 },
+  contactText: {
+    color: "#fff",
+    fontWeight: "600",
+    fontSize: 13,
+  },
 });
