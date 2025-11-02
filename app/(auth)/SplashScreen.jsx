@@ -50,7 +50,7 @@ export default function SplashScreen() {
   }, []);
 
   const handleLogin = () => {
-    router.push("/PhoneLogin");
+    router.push("/Layout");
   };
 
   return (
