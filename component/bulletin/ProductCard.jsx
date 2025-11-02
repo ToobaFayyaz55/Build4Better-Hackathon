@@ -1,4 +1,4 @@
-import { MaterialIcons } from "@expo/vector-icons"; // or any icon library you use
+import { MaterialIcons } from "@expo/vector-icons";
 import { useState } from "react";
 import {
   Clipboard,
