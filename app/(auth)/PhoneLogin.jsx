@@ -2,6 +2,7 @@ import { Feather, Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import { useEffect, useRef, useState } from "react";
+
 import {
   Animated,
   KeyboardAvoidingView,
@@ -14,6 +15,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { supabase } from "../../lib/supabase";
 import { supabase } from "../../lib/supabase";
 
 export default function PhoneLogin() {
@@ -114,9 +116,9 @@ export default function PhoneLogin() {
     // }
     
 
-    // HARDCODED FOR PREVIEW:
-    console.log("Resending OTP to:", phoneNumber);
-    setResendTimer(60);
+    //   // HARDCODED FOR PREVIEW:
+    //   console.log("Resending OTP to:", phoneNumber);
+    //   setResendTimer(60);
   };
 
   const handleOtpChange = (value, index) => {

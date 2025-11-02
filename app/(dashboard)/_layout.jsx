@@ -6,7 +6,14 @@ const _layout = () => {
       <Stack.Screen
         name="Dashboard"
         options={{
-          title: "Page name",
+          title: "Dashboard",
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="Notifications"
+        options={{
+          title: "Notifications",
           headerShown: false,
         }}
       />
