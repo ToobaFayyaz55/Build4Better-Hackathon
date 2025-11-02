@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { View } from "react-native";
 import Dashboard from "../app/(dashboard)/Dashboard";
+import SahoolatBazaar from "../app/(market)/Market";
 import Footer from "./Footer";
 
 const Layout = () => {
@@ -13,8 +14,8 @@ const Layout = () => {
         return <Dashboard />;
       //   case "inventory":
       //     return <AddInventoryPage />;
-      //   case "markets":
-      //     return <MarketsScreen />;
+        case "markets":
+          return <SahoolatBazaar />;
       //   case "equipment":
       //     return <EquipmentScreen />;
       //   case "community":
