@@ -8,53 +8,75 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { supabase } from "../../lib/supabase";
 
 const categories = ["Machinery", "Transport", "Seeds", "Fertilizer"];
 
 export default function CreatePostModal({
   visible,
   onClose,
-  onPost,
   postToEdit,
+  currentUserPhone,
 }) {
   const [category, setCategory] = useState("");
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
 
-  const phoneNumber = "0300-0000000"; // hardcoded for now
+  const resetFields = () => {
+    // ADDED: Function to clear state
+    setCategory("");
+    setTitle("");
+    setDescription("");
+  };
 
-  // Pre-fill values if editing
   useEffect(() => {
     if (postToEdit) {
-      setCategory(postToEdit.tags[0] || "");
+      const cat =
+        typeof postToEdit.category === "string"
+          ? postToEdit.category
+          : postToEdit.category?.[0];
+      setCategory(cat || "");
       setTitle(postToEdit.title || "");
       setDescription(postToEdit.description || "");
     } else {
-      setCategory("");
-      setTitle("");
-      setDescription("");
+      // Use resetFields here for when postToEdit is null/undefined
+      resetFields();
     }
   }, [postToEdit]);
 
-  const handlePost = () => {
+  const handlePost = async () => {
     if (!category || !title) {
       alert("Category and Title are required!");
       return;
     }
 
-    const newPost = {
-      id: Date.now().toString(), // unique id
+    const now = new Date();
+    const utcPlus5 = new Date(now.getTime() + 5 * 60 * 60 * 1000);
+
+    const payload = {
       title,
       description,
-      tags: [category],
-      phone: phoneNumber,
-      timestampFull: new Date().toISOString(),
+      category,
+      contact: currentUserPhone,
     };
 
-    onPost(newPost);
-    setCategory("");
-    setTitle("");
-    setDescription("");
+    let error;
+    if (postToEdit) {
+      // For UPDATE, we typically don't change the created_at time.
+      ({ error } = await supabase
+        .from("bulletin")
+        .update(payload)
+        .eq("id", postToEdit.id));
+    } else {
+      payload.created_at = utcPlus5.toISOString();
+      ({ error } = await supabase.from("bulletin").insert([payload]));
+    }
+
+    if (error) console.error("Error saving post:", error.message);
+
+    // Call resetFields here before closing to clear for the next open
+    resetFields();
+    onClose();
   };
 
   return (
@@ -65,7 +87,6 @@ export default function CreatePostModal({
             {postToEdit ? "Edit Post" : "New Post"}
           </Text>
 
-          {/* Category */}
           <Text style={styles.label}>Category *</Text>
           <View style={styles.dropdownContainer}>
             {categories.map((cat) => (
@@ -82,7 +103,6 @@ export default function CreatePostModal({
             ))}
           </View>
 
-          {/* Title */}
           <Text style={styles.label}>Title *</Text>
           <TextInput
             style={styles.input}
@@ -91,7 +111,6 @@ export default function CreatePostModal({
             placeholder="Enter title"
           />
 
-          {/* Description */}
           <Text style={styles.label}>Description</Text>
           <TextInput
             style={[styles.input, { height: 80 }]}
@@ -101,9 +120,15 @@ export default function CreatePostModal({
             multiline
           />
 
-          {/* Buttons */}
           <View style={styles.buttonRow}>
-            <TouchableOpacity style={styles.cancelBtn} onPress={onClose}>
+            <TouchableOpacity
+              style={styles.cancelBtn}
+              onPress={() => {
+                // Call resetFields when cancelling too
+                resetFields();
+                onClose();
+              }}
+            >
               <Text style={styles.btnText}>Cancel</Text>
             </TouchableOpacity>
 

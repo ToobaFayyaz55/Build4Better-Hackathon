@@ -9,30 +9,28 @@ import {
   View,
 } from "react-native";
 
-export default function PostCard({ post, onEdit, onDelete }) {
+export default function PostCard({ post, onEdit, onDelete, isMyPost }) {
   const [modalVisible, setModalVisible] = useState(false);
 
   const renderTimestamp = () => {
-    const postDate = new Date(post.timestampFull);
+    const postDate = new Date(post.created_at);
     const now = new Date();
     const isSameDay =
       postDate.getDate() === now.getDate() &&
       postDate.getMonth() === now.getMonth() &&
       postDate.getFullYear() === now.getFullYear();
 
-    if (isSameDay) {
-      return postDate.toLocaleTimeString([], {
-        hour: "2-digit",
-        minute: "2-digit",
-        hour12: true,
-      });
-    } else {
-      return postDate.toLocaleDateString([], {
-        day: "2-digit",
-        month: "short",
-        year: "numeric",
-      });
-    }
+    return isSameDay
+      ? postDate.toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: true,
+        })
+      : postDate.toLocaleDateString([], {
+          day: "2-digit",
+          month: "short",
+          year: "numeric",
+        });
   };
 
   return (
@@ -43,13 +41,9 @@ export default function PostCard({ post, onEdit, onDelete }) {
         activeOpacity={0.9}
       >
         <View style={styles.topRow}>
-          <Text style={styles.phone}>{post.phone}</Text>
+          <Text style={styles.phone}>{post.contact}</Text>
           <View style={styles.tagsContainer}>
-            {post.tags.map((tag, idx) => (
-              <Text key={idx} style={styles.tag}>
-                {tag}
-              </Text>
-            ))}
+            <Text style={styles.tag}>{post.category}</Text>
           </View>
         </View>
 
@@ -57,21 +51,23 @@ export default function PostCard({ post, onEdit, onDelete }) {
 
         <View style={styles.bottomRow}>
           <Text style={styles.timestamp}>{renderTimestamp()}</Text>
-          <View style={styles.actionsRow}>
-            <TouchableOpacity onPress={() => onEdit(post)}>
-              <Feather name="edit-2" size={18} color="#bd9e4b" />
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => onDelete(post.id)}
-              style={{ marginLeft: 12 }}
-            >
-              <Ionicons name="trash" size={18} color="#bd9e4b" />
-            </TouchableOpacity>
-          </View>
+
+          {isMyPost && (
+            <View style={styles.actionsRow}>
+              <TouchableOpacity onPress={() => onEdit(post)}>
+                <Feather name="edit-2" size={18} color="#bd9e4b" />
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => onDelete(post.id)}
+                style={{ marginLeft: 12 }}
+              >
+                <Ionicons name="trash" size={18} color="#bd9e4b" />
+              </TouchableOpacity>
+            </View>
+          )}
         </View>
       </TouchableOpacity>
 
-      {/* Modal for full description */}
       <Modal
         visible={modalVisible}
         transparent
@@ -83,10 +79,12 @@ export default function PostCard({ post, onEdit, onDelete }) {
           onPress={() => setModalVisible(false)}
         >
           <Pressable style={styles.modalContainer}>
+            <Text style={styles.modalCategory}>{post.category}</Text>
             <Text style={styles.modalTitle}>{post.title}</Text>
             <Text style={styles.modalDescription}>{post.description}</Text>
+            <Text style={styles.modalTag}>Tag: {post.tags}</Text>
             <Text style={styles.modalTimestamp}>
-              {new Date(post.timestampFull).toLocaleString([], {
+              {new Date(post.created_at).toLocaleString([], {
                 day: "2-digit",
                 month: "short",
                 year: "numeric",

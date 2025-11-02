@@ -1,8 +1,10 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { LinearGradient } from "expo-linear-gradient";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
+  ActivityIndicator,
   FlatList,
+  RefreshControl,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -13,43 +15,84 @@ import CreatePostModal from "../../component/bulletin/CreatePostModal";
 import PostCard from "../../component/bulletin/PostCard";
 import ProductCard from "../../component/bulletin/ProductCard";
 import TabBar from "../../component/TabBar";
-import { samplePosts, sampleProducts } from "../../constants/bulletin";
+import { sampleProducts } from "../../constants/bulletin";
+import { supabase } from "../../lib/supabase";
 
 export default function KisaanPost() {
   const [selectedTab, setSelectedTab] = useState("all");
-  const [posts, setPosts] = useState(samplePosts);
+  const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [editingPost, setEditingPost] = useState(null);
+  const [refreshing, setRefreshing] = useState(false);
+  const currentUserPhone = "0321-7788990";
 
-  // --- Post handlers ---
-  const createOrUpdatePost = (postData) => {
-    if (editingPost) {
-      setPosts(
-        posts.map((p) => (p.id === editingPost.id ? { ...p, ...postData } : p))
-      );
-    } else {
-      const newPost = { ...postData, id: (posts.length + 1).toString() };
-      setPosts([newPost, ...posts]);
-    }
-    setEditingPost(null);
-    setShowModal(false);
+  const fetchPosts = async () => {
+    setLoading(true);
+    const { data, error } = await supabase
+      .from("bulletin")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (error) console.error("Error fetching posts:", error.message);
+    else setPosts(data || []);
+    setLoading(false);
   };
 
-  const deletePost = (postId) => setPosts(posts.filter((p) => p.id !== postId));
+  useEffect(() => {
+    fetchPosts();
+  }, []);
 
-  const editPost = (post) => {
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    await fetchPosts();
+    setRefreshing(false);
+  }, []);
+
+  const handleEditPost = (post) => {
     setEditingPost(post);
     setShowModal(true);
   };
 
-  // --- List renderers ---
-  const renderPosts = () => (
+  const handleDeletePost = async (postId) => {
+    const { error } = await supabase.from("bulletin").delete().eq("id", postId);
+    if (error) console.error("Delete error:", error.message);
+    else fetchPosts();
+  };
+
+  const renderAllPosts = () => (
     <FlatList
       data={posts}
-      keyExtractor={(item) => item.id}
+      keyExtractor={(item) => item.id.toString()}
       renderItem={({ item }) => (
-        <PostCard post={item} onEdit={editPost} onDelete={deletePost} />
+        <PostCard
+          post={item}
+          onEdit={handleEditPost}
+          onDelete={handleDeletePost}
+        />
       )}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }
+      showsVerticalScrollIndicator={false}
+    />
+  );
+
+  const renderMyPosts = () => (
+    <FlatList
+      data={posts.filter((item) => item.contact === currentUserPhone)}
+      keyExtractor={(item) => item.id.toString()}
+      renderItem={({ item }) => (
+        <PostCard
+          post={item}
+          onEdit={handleEditPost}
+          onDelete={handleDeletePost}
+          isMyPost={true}
+        />
+      )}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }
       showsVerticalScrollIndicator={false}
     />
   );
@@ -64,11 +107,19 @@ export default function KisaanPost() {
   );
 
   const renderContent = () => {
-    if (selectedTab === "all" || selectedTab === "my") return renderPosts();
+    if (loading)
+      return (
+        <View
+          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+        >
+          <ActivityIndicator size="large" color="#bd9e4b" />
+        </View>
+      );
+    if (selectedTab === "all") return renderAllPosts();
+    if (selectedTab === "my") return renderMyPosts();
     if (selectedTab === "products") return renderProducts();
   };
 
-  // --- Header ---
   const Header = () => (
     <View style={styles.headerRow}>
       <Text style={styles.headerText}>کسان Post</Text>
@@ -107,9 +158,13 @@ export default function KisaanPost() {
 
       <CreatePostModal
         visible={showModal}
-        onClose={() => setShowModal(false)}
-        onPost={createOrUpdatePost}
+        onClose={() => {
+          setShowModal(false);
+          setEditingPost(null);
+          fetchPosts();
+        }}
         postToEdit={editingPost}
+        currentUserPhone={currentUserPhone}
       />
     </SafeAreaView>
   );
