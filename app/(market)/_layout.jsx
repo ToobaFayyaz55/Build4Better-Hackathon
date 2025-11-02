@@ -1,14 +1,21 @@
 import { Stack } from "expo-router";
-import React from "react";
 
 const _layout = () => {
   return (
     <Stack>
       <Stack.Screen
-        name="filename"
+        name="Market"
         options={{
-          title: "Page name",
-          headerShown: false,
+          headerShown: true,
+          title: "Sahoolat Bazaar",
+          headerStyle: {
+            backgroundColor: "#bd9e4b",
+          },
+          headerTintColor: "white",
+          headerTitleStyle: {
+            fontWeight: "bold",
+            fontSize: 20,
+          },
         }}
       />
     </Stack>
