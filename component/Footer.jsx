@@ -1,4 +1,5 @@
 import { Feather } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
 import { useEffect, useRef } from "react";
 import {
   Animated,
@@ -32,7 +33,7 @@ const Footer = ({ active, onNavigate }) => {
           useNativeDriver: true,
         }),
         Animated.timing(translateYAnim[index], {
-          toValue: isActive ? -15 : 0,
+          toValue: isActive ? -20 : 0, // negative to pop out
           duration: 200,
           useNativeDriver: true,
         }),
@@ -66,20 +67,22 @@ const Footer = ({ active, onNavigate }) => {
                     { scale: scaleAnim[index] },
                     { translateY: translateYAnim[index] },
                   ],
-                  backgroundColor: isActive ? "#fde68a" : "transparent",
-                  shadowColor: isActive ? "#fde68a" : "transparent",
-                  shadowOpacity: isActive ? 0.4 : 0,
-                  shadowOffset: { width: 0, height: 5 },
-                  shadowRadius: 8,
-                  elevation: isActive ? 5 : 0,
+                  zIndex: isActive ? 10 : 1, // active circle above others
                 },
               ]}
             >
-              <Feather
-                name={item.icon}
-                size={28}
-                color={isActive ? "#bd9e4b" : "#9ca3af"}
-              />
+              {isActive ? (
+                <LinearGradient
+                  colors={["#bd9e4b", "#fde68a"]}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                  style={[styles.gradientCircle, { marginBottom: -20 }]} // extend past footer
+                >
+                  <Feather name={item.icon} size={28} color="#fff" />
+                </LinearGradient>
+              ) : (
+                <Feather name={item.icon} size={28} color="#9ca3af" />
+              )}
             </Animated.View>
           </TouchableWithoutFeedback>
         );
@@ -93,16 +96,28 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-around",
     alignItems: "flex-end",
-    paddingVertical: 10,
-    paddingBottom: 15,
+    // paddingBottom: 15,
     backgroundColor: "#fff",
   },
   iconWrapper: {
+    width: 50,
+    height: 30,
+    borderRadius: 25,
+    alignItems: "center",
+    marginBottom: 30,
+    justifyContent: "center",
+  },
+  gradientCircle: {
     width: 50,
     height: 50,
     borderRadius: 25,
     alignItems: "center",
     justifyContent: "center",
+    shadowColor: "#bd9e4b",
+    shadowOffset: { width: 0, height: 5 },
+    shadowOpacity: 0.4,
+    shadowRadius: 8,
+    elevation: 5,
   },
 });
 

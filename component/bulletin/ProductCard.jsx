@@ -76,7 +76,7 @@ export default function ProductCard({ brandData }) {
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: "#fff",
+    backgroundColor: "#fffffa",
     padding: 12,
     borderRadius: 8,
     marginVertical: 6,

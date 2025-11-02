@@ -7,6 +7,7 @@ import KisaanPost from "./(bulletin)/KisaanPost";
 import Dashboard from "./(dashboard)/Dashboard";
 import EquipmentHub from "./(equipment)/EquipmentHub";
 import InventoryScreen from "./(inventory)/InventoryScreen";
+import MarketWelcome from "./(market)/Market";
 
 const Layout = () => {
   const [activeTab, setActiveTab] = useState("home"); // default home
@@ -17,8 +18,8 @@ const Layout = () => {
         return <Dashboard />;
       case "inventory":
         return <InventoryScreen />;
-      //   case "markets":
-      //     return <MarketsScreen />;
+        case "markets":
+          return <MarketWelcome />;
       case "equipment":
         return <EquipmentHub />;
       case "community":
