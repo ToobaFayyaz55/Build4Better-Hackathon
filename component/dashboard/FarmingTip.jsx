@@ -1,19 +1,42 @@
-import { Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 
 const FarmingTip = () => {
   return (
-    <View className="px-4 pb-6">
-      <View className="bg-green-50 rounded-lg p-4 border border-green-200">
-        <Text className="text-base font-semibold text-gray-900 mb-2">
-          💡 Farming Tip
-        </Text>
-        <Text className="text-sm text-gray-700 leading-5">
-          Store tomatoes at room temperature to maintain their flavor and texture. 
-          Refrigeration can make them mealy.
+    <View style={styles.container}>
+      <View style={styles.card}>
+        <Text style={styles.title}>💡 Farming Tip</Text>
+        <Text style={styles.text}>
+          Store tomatoes at room temperature to maintain their flavor and
+          texture. Refrigeration can make them mealy.
         </Text>
       </View>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    paddingHorizontal: 16,
+    paddingBottom: 24,
+  },
+  card: {
+    backgroundColor: "#f0fdf4",
+    borderRadius: 8,
+    padding: 16,
+    borderWidth: 1,
+    borderColor: "#bbf7d0",
+  },
+  title: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#111827",
+    marginBottom: 8,
+  },
+  text: {
+    fontSize: 14,
+    color: "#374151",
+    lineHeight: 20,
+  },
+});
 
 export default FarmingTip;

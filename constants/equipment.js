@@ -1,0 +1,32 @@
+export const mockEquipment = [
+  {
+    id: 1,
+    name: "Tractor XT200",
+    category: "Tractor",
+    condition: "200HP, Diesel, Good condition",
+    status: "Available",
+    images: [require("../assets/Tractor.jpeg")],
+    owner_id: 1,
+  },
+  {
+    id: 2,
+    name: "Harvester H500",
+    category: "Harvester",
+    condition: "500kg/hr capacity, Engine OK",
+    status: "Rented",
+    rentalEnd: "2025-11-10 15:00",
+    images: [require("../assets/Harvestor.jpeg")],
+    owner_id: 2,
+    owner: { name: "Ali Khan", phone: "+923001112233" },
+  },
+  {
+    id: 3,
+    name: "Seeder S100",
+    category: "Seeder",
+    condition: "Seeder with 5 rows, lightly used",
+    status: "Under Maintenance",
+    images: [require("../assets/Seeder.jpeg")],
+    owner_id: 3,
+    owner: { name: "Sara Ahmed", phone: "+923004445566" },
+  },
+];

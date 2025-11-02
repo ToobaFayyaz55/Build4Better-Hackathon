@@ -56,7 +56,7 @@ const HomeDashboard = () => {
   };
 
   const handleExpiringPress = () => {
-    router.push("/inventory?filter=expiring");
+    router.push("/(inventory)/InventoryScreen?filter=expiring");
   };
 
   const handleNotificationPress = () => {
@@ -64,7 +64,7 @@ const HomeDashboard = () => {
   };
 
   const handleAddProducePress = () => {
-    router.push("/inventory");
+    router.push("/(inventory)/InventoryScreen");
   };
 
   const handleFindMarketsPress = () => {

@@ -1,28 +1,62 @@
 import { Feather } from "@expo/vector-icons";
-import { Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 const QuickActions = ({ onAddProducePress, onFindMarketsPress }) => {
   return (
-    <View className="px-4 pb-6">
-      <Text className="text-lg font-semibold text-gray-900 mb-3">Quick Actions</Text>
-      <View className="flex-row gap-3">
+    <View style={styles.container}>
+      <Text style={styles.heading}>Quick Actions</Text>
+      <View style={styles.buttonRow}>
         <TouchableOpacity
           onPress={onAddProducePress}
-          className="flex-1 bg-white rounded-lg p-4 border border-gray-200 items-center py-6"
+          style={styles.button}
         >
           <Feather name="package" size={24} color="#22c55e" />
-          <Text className="text-sm font-semibold text-gray-900 mt-2">Add Produce</Text>
+          <Text style={styles.buttonText}>Add Produce</Text>
         </TouchableOpacity>
         <TouchableOpacity
           onPress={onFindMarketsPress}
-          className="flex-1 bg-white rounded-lg p-4 border border-gray-200 items-center py-6"
+          style={styles.button}
         >
           <Feather name="trending-up" size={24} color="#3b82f6" />
-          <Text className="text-sm font-semibold text-gray-900 mt-2">Find Markets</Text>
+          <Text style={styles.buttonText}>Find Markets</Text>
         </TouchableOpacity>
       </View>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    paddingHorizontal: 16,
+    paddingBottom: 24,
+  },
+  heading: {
+    fontSize: 18,
+    fontWeight: "600",
+    color: "#111827",
+    marginBottom: 12,
+  },
+  buttonRow: {
+    flexDirection: "row",
+    gap: 12,
+  },
+  button: {
+    flex: 1,
+    backgroundColor: "white",
+    borderRadius: 8,
+    paddingVertical: 24,
+    paddingHorizontal: 16,
+    borderWidth: 1,
+    borderColor: "#e5e5e5",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  buttonText: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: "#111827",
+    marginTop: 8,
+  },
+});
 
 export default QuickActions;

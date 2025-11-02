@@ -1,6 +1,13 @@
+import { Feather } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useState } from "react";
-import { ScrollView, TouchableOpacity, View } from "react-native";
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 const NotificationsScreen = () => {
   const router = useRouter();
@@ -95,17 +102,17 @@ const NotificationsScreen = () => {
   const unreadCount = notifications.filter((n) => !n.read).length;
 
   return (
-    <View className="flex-1 bg-gray-50">
+    <View style={styles.container}>
       {/* Header */}
-      <View className="bg-white border-b border-gray-200 px-4 py-4">
-        <View className="flex-row items-center justify-between mb-2">
-          <Text className="text-2xl font-bold text-gray-900">Notifications</Text>
+      <View style={styles.header}>
+        <View style={styles.headerContent}>
+          <Text style={styles.title}>Notifications</Text>
           <TouchableOpacity onPress={() => router.back()}>
-            <Text className="text-gray-600 text-lg">✕</Text>
+            <Text style={styles.closeButton}>✕</Text>
           </TouchableOpacity>
         </View>
         {unreadCount > 0 && (
-          <Text className="text-sm text-gray-600">
+          <Text style={styles.unreadText}>
             {unreadCount} unread notifications
           </Text>
         )}
@@ -114,66 +121,73 @@ const NotificationsScreen = () => {
       {/* Notifications List */}
       <ScrollView showsVerticalScrollIndicator={false}>
         {notifications.length === 0 ? (
-          <View className="flex-1 items-center justify-center py-12">
+          <View style={styles.emptyContainer}>
             <Feather name="check-circle" size={48} color="#bd9e4b" />
-            <Text className="text-lg font-semibold text-gray-900 mt-3">
-              All caught up!
-            </Text>
-            <Text className="text-sm text-gray-600 mt-1">
+            <Text style={styles.emptyTitle}>All caught up!</Text>
+            <Text style={styles.emptySubtitle}>
               You have no new notifications
             </Text>
           </View>
         ) : (
-          <View className="p-4 space-y-3">
+          <View style={styles.listContainer}>
             {notifications.map((notification) => (
-                <TouchableOpacity
-                  key={notification.id}
-                  onPress={() => handleNotificationTap(notification)}
-                  className={`rounded-lg p-4 flex-row items-start justify-between border ${
-                    notification.read ? "bg-white border-gray-200" : "bg-blue-50 border-blue-200"
-                  }`}
-                >
-                  <View className="flex-row flex-1 items-start">
-                    <View
-                      className="w-10 h-10 rounded-full items-center justify-center mr-3"
-                      style={{ backgroundColor: `${notification.color}20` }}
-                    >
-                      <Feather name={notification.icon} size={20} color={notification.color} />
-                    </View>
-                    <View className="flex-1 pr-2">
-                      <View className="flex-row items-center">
-                        <Text className="text-sm font-semibold text-gray-900 flex-1">
-                          {notification.title}
-                        </Text>
-                        {!notification.read && (
-                          <View className="w-2 h-2 rounded-full bg-blue-600 ml-2" />
-                        )}
-                      </View>
-                      <Text className="text-xs text-gray-600 mt-1 leading-4">
-                        {notification.description}
-                      </Text>
-                      <Text className="text-xs text-gray-500 mt-2">
-                        {notification.timestamp}
-                      </Text>
-                    </View>
+              <TouchableOpacity
+                key={notification.id}
+                onPress={() => handleNotificationTap(notification)}
+                style={[
+                  styles.notificationCard,
+                  notification.read
+                    ? styles.notificationCardRead
+                    : styles.notificationCardUnread,
+                ]}
+              >
+                <View style={styles.cardContent}>
+                  <View
+                    style={[
+                      styles.iconContainer,
+                      { backgroundColor: `${notification.color}20` },
+                    ]}
+                  >
+                    <Feather
+                      name={notification.icon}
+                      size={20}
+                      color={notification.color}
+                    />
                   </View>
+                  <View style={styles.textContent}>
+                    <View style={styles.titleRow}>
+                      <Text style={styles.notificationTitle}>
+                        {notification.title}
+                      </Text>
+                      {!notification.read && (
+                        <View style={styles.unreadDot} />
+                      )}
+                    </View>
+                    <Text style={styles.description}>
+                      {notification.description}
+                    </Text>
+                    <Text style={styles.timestamp}>
+                      {notification.timestamp}
+                    </Text>
+                  </View>
+                </View>
 
-                  {/* Action Buttons */}
-                  <View className="flex-row items-center space-x-2 ml-2">
-                    <TouchableOpacity
-                      onPress={() => handleMarkAsRead(notification.id)}
-                      className="p-2"
-                    >
-                      <Feather name="check-circle" size={18} color="#bd9e4b" />
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      onPress={() => handleDelete(notification.id)}
-                      className="p-2"
-                    >
-                      <Feather name="trash-2" size={18} color="#ef4444" />
-                    </TouchableOpacity>
-                  </View>
-                </TouchableOpacity>
+                {/* Action Buttons */}
+                <View style={styles.actions}>
+                  <TouchableOpacity
+                    onPress={() => handleMarkAsRead(notification.id)}
+                    style={styles.actionButton}
+                  >
+                    <Feather name="check-circle" size={18} color="#bd9e4b" />
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => handleDelete(notification.id)}
+                    style={styles.actionButton}
+                  >
+                    <Feather name="trash-2" size={18} color="#ef4444" />
+                  </TouchableOpacity>
+                </View>
+              </TouchableOpacity>
             ))}
           </View>
         )}
@@ -181,5 +195,129 @@ const NotificationsScreen = () => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#f9fafb",
+  },
+  header: {
+    backgroundColor: "white",
+    borderBottomWidth: 1,
+    borderBottomColor: "#e5e7eb",
+    paddingHorizontal: 16,
+    paddingVertical: 16,
+  },
+  headerContent: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 8,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "#111827",
+  },
+  closeButton: {
+    fontSize: 24,
+    color: "#4b5563",
+  },
+  unreadText: {
+    fontSize: 14,
+    color: "#4b5563",
+  },
+  emptyContainer: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 48,
+  },
+  emptyTitle: {
+    fontSize: 18,
+    fontWeight: "600",
+    color: "#111827",
+    marginTop: 12,
+  },
+  emptySubtitle: {
+    fontSize: 14,
+    color: "#4b5563",
+    marginTop: 4,
+  },
+  listContainer: {
+    padding: 16,
+    gap: 12,
+  },
+  notificationCard: {
+    borderRadius: 8,
+    padding: 16,
+    flexDirection: "row",
+    alignItems: "flex-start",
+    justifyContent: "space-between",
+    borderWidth: 1,
+  },
+  notificationCardRead: {
+    backgroundColor: "white",
+    borderColor: "#e5e7eb",
+  },
+  notificationCardUnread: {
+    backgroundColor: "#eff6ff",
+    borderColor: "#bfdbfe",
+  },
+  cardContent: {
+    flexDirection: "row",
+    flex: 1,
+    alignItems: "flex-start",
+  },
+  iconContainer: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    alignItems: "center",
+    justifyContent: "center",
+    marginRight: 12,
+  },
+  textContent: {
+    flex: 1,
+    paddingRight: 8,
+  },
+  titleRow: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  notificationTitle: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: "#111827",
+    flex: 1,
+  },
+  unreadDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: "#1e40af",
+    marginLeft: 8,
+  },
+  description: {
+    fontSize: 12,
+    color: "#4b5563",
+    marginTop: 4,
+    lineHeight: 16,
+  },
+  timestamp: {
+    fontSize: 12,
+    color: "#6b7280",
+    marginTop: 8,
+  },
+  actions: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    marginLeft: 8,
+  },
+  actionButton: {
+    padding: 8,
+  },
+});
 
 export default NotificationsScreen;
