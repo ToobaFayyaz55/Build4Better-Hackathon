@@ -12,11 +12,7 @@ export default function EquipmentLayout() {
         options={{ title: "My Equipment / میری مشینیں", headerShown: true }}
       />
       <Stack.Screen
-        name="OthersEquipment"
-        options={{ title: "Available Equipment / دستیاب مشینری", headerShown: true }}
-      />
-      <Stack.Screen
-        name="AddEditScreen"
+        name="AddEditEquipmentModal"
         options={{ title: "Add or Edit Equipment / نئی یا پرانی مشین", headerShown: true }}
       />
     </Stack>
