@@ -1,13 +1,12 @@
-import React, { useMemo, useState } from "react";
-import {
-  View,
-  Text,
-  ScrollView,
-  TouchableOpacity,
-  StyleSheet,
-} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import FilterBar from "../../component/inventory/FilterBar";
+import { useMemo, useState } from "react";
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import AddItemModal from "../../component/inventory/AddItemModal";
 import BatchListModal from "../../component/inventory/BatchListModal";
 import CropCard from "../../component/inventory/CropCard";
@@ -150,7 +149,7 @@ export default function InventoryScreen() {
       </View>
 
       {/* Filter bar */}
-      <View style={styles.filterBarWrapper}>
+      {/* <View style={styles.filterBarWrapper}>
 
       <FilterBar
         searchTerm={searchTerm}
@@ -159,7 +158,7 @@ export default function InventoryScreen() {
         onToggleFilter={toggleFilter}
       />
 
-        </View>
+        </View> */}
       {/* Separator */}
       <View style={styles.sep} />
 
@@ -248,8 +247,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   filterBarWrapper: {
-    alignItems: "center",      // centers horizontally
-    justifyContent: "center",  // ensures the content is centered
+    alignItems: "center", // centers horizontally
+    justifyContent: "center", // ensures the content is centered
     paddingVertical: 6,
   },
   title: { fontSize: 22, fontWeight: "700", color: "#111827" },

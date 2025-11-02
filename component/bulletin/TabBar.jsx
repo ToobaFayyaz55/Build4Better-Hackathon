@@ -90,7 +90,7 @@ export default function TabBar({ selectedTab, setSelectedTab }) {
 }
 
 const styles = StyleSheet.create({
-  tabContainer: { flexDirection: "row", marginTop: 20, paddingHorizontal: 20 },
+  tabContainer: { flexDirection: "row", marginTop: 10, paddingHorizontal: 20 },
   tabText: { fontWeight: "medium" },
   underline: {
     height: 2.5,

@@ -69,7 +69,7 @@ export default function KisaanPost() {
   // --- Header ---
   const Header = () => (
     <View style={styles.headerRow}>
-      <Text style={styles.headerText}>KISAAN POST</Text>
+      <Text style={styles.headerText}>Kisaan Post</Text>
       <TouchableOpacity
         style={styles.addBtn}
         onPress={() => {
@@ -104,7 +104,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginTop: 40,
+    marginTop: 30,
     paddingHorizontal: 10,
   },
   headerText: { fontSize: 22, fontWeight: "600", color: "#111827" },
