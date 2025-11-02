@@ -50,7 +50,7 @@ const AddMarketFormModal = ({
                 style={styles.textInput}
                 placeholder="Enter market name"
                 placeholderTextColor="#999"
-                value={formData.name}
+                value={formData.market_name}
                 onChangeText={(text) =>
                   onFormDataChange({ ...formData, name: text })
                 }

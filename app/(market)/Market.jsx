@@ -1,10 +1,12 @@
 import { Feather } from "@expo/vector-icons";
 import * as Location from "expo-location";
 import { useRouter } from "expo-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import MarketMapModal from "../../component/market/MarketMapModal";
+import { addMarket, deleteMarket, getMarkets } from "../../lib/marketService";
 
 import {
+  ActivityIndicator,
   FlatList,
   StyleSheet,
   Text,
@@ -22,6 +24,7 @@ const SahoolatBazaar = () => {
 
   // State Management
   const [markets, setMarkets] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [sortBy, setSortBy] = useState("recently");
   const [selectedFilters, setSelectedFilters] = useState([]);
   const [showAddModal, setShowAddModal] = useState(false);
@@ -32,7 +35,7 @@ const SahoolatBazaar = () => {
 
   // Form State
   const [formData, setFormData] = useState({
-    name: "",
+    market_name: "",
     tags: [],
     notes: "",
     latitude: null,
@@ -43,6 +46,22 @@ const SahoolatBazaar = () => {
   const [lonInput, setLonInput] = useState("");
 
   const availableTags = ["Wholesale", "Retail", "Cold Storage", "Produce", "Livestock"];
+
+  // Fetch markets from Supabase on component mount
+  useEffect(() => {
+    fetchMarkets();
+  }, []);
+
+  const fetchMarkets = async () => {
+    setLoading(true);
+    const result = await getMarkets();
+    if (result.success) {
+      setMarkets(result.data);
+    } else {
+      alert("Error loading markets: " + result.error);
+    }
+    setLoading(false);
+  };
 
   // Get sorted and filtered markets
   const getFilteredAndSortedMarkets = () => {
@@ -116,7 +135,7 @@ const SahoolatBazaar = () => {
   };
 
   // Save new market
-  const handleSaveMarket = () => {
+  const handleSaveMarket = async () => {
     if (!formData.name.trim()) {
       alert("Please enter a market name");
       return;
@@ -128,24 +147,33 @@ const SahoolatBazaar = () => {
     }
 
     const newMarket = {
-      id: Date.now().toString(),
-      name: formData.name,
+      market_name: formData.name, // <-- map name to market_name
       tags: formData.tags || [],
       notes: formData.notes || "",
       latitude: parseFloat(formData.latitude),
       longitude: parseFloat(formData.longitude),
-      dateAdded: new Date().toISOString(),
+      // you can add dateAdded if your table has it
     };
 
-    setMarkets([...markets, newMarket]);
-    closeForm();
+    const result = await addMarket(newMarket);
+    if (result.success) {
+      await fetchMarkets(); // refresh the list
+      closeForm();
+    } else {
+      alert("Error saving market: " + result.error);
+    }
   };
 
   // Delete market
-  const handleDeleteMarket = (marketId) => {
-    setMarkets(markets.filter((m) => m.id !== marketId));
-    setShowMarketDetailModal(false);
-    setSelectedMarket(null);
+  const handleDeleteMarket = async (marketId) => {
+    const result = await deleteMarket(marketId);
+    if (result.success) {
+      setMarkets(markets.filter((m) => m.id !== marketId));
+      setShowMarketDetailModal(false);
+      setSelectedMarket(null);
+    } else {
+      alert("Error deleting market: " + result.error);
+    }
   };
 
   // Close form and reset
@@ -205,7 +233,12 @@ const SahoolatBazaar = () => {
       </View>
 
       {/* Market List */}
-      {filteredMarkets.length === 0 ? (
+      {loading ? (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="#bd9e4b" />
+          <Text style={styles.loadingText}>Loading markets...</Text>
+        </View>
+      ) : filteredMarkets.length === 0 ? (
         renderEmptyState()
       ) : (
         <FlatList
@@ -287,6 +320,16 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#f5f5f5",
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  loadingText: {
+    marginTop: 12,
+    fontSize: 14,
+    color: "#666",
   },
   filterBar: {
     backgroundColor: "white",

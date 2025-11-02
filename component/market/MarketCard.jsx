@@ -4,7 +4,7 @@ const MarketCard = ({ market, onPress }) => {
   return (
     <TouchableOpacity style={styles.card} onPress={onPress}>
       <View style={styles.cardHeader}>
-        <Text style={styles.marketName}>{market.name}</Text>
+        <Text style={styles.marketName}>{market.market_name}</Text>
       </View>
 
       {market.tags && market.tags.length > 0 && (
