@@ -32,6 +32,7 @@ export default function AddItemModal({ visible, onClose, onAddItem  }) {
     newBatch.status = calculateStatus(newBatch);
 
     onAddItem(newCrop, newBatch); // call parent
+    
     onClose(); // close modal
 
     // Reset fields
