@@ -64,9 +64,9 @@ export default function BatchListModal({ visible, onClose, crop, batches, onUpda
     }
 
     // Format date safely
-    const formattedHarvest = harvestDate.toISOString().split("T")[0];
+    const formattedHarvest = new Date(harvestDate.toISOString().split("T")[0])
 
-    const expiry_date = calculateExpiryDate(harvestDate, crop.category || "fruits");
+    const expiry_date = new Date(calculateExpiryDate(harvestDate, crop.category || "fruits"))
 
     const newBatchObj = {
       qty: qtyInt,

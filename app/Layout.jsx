@@ -8,6 +8,7 @@ import Dashboard from "./(dashboard)/Dashboard";
 import EquipmentHub from "./(equipment)/EquipmentHub";
 import InventoryScreen from "./(inventory)/InventoryScreen";
 
+
 const Layout = () => {
   const [activeTab, setActiveTab] = useState("home"); // default home
 
@@ -24,9 +25,10 @@ const Layout = () => {
       case "community":
         return <KisaanPost />;
       default:
-        return <SplashScreen />;
+        return <SplashScreen/>;
     }
   };
+
 
   return (
     <View style={{ flex: 1 }}>
