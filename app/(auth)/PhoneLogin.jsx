@@ -2,6 +2,7 @@ import { Feather, Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import { useEffect, useRef, useState } from "react";
+
 import {
   Animated,
   KeyboardAvoidingView,
@@ -70,21 +71,21 @@ export default function PhoneLogin() {
     }
 
     // ACTUAL SUPABASE IMPLEMENTATION (commented out):
-    /*
-    try {
-      const { data, error } = await supabase.auth.signInWithOtp({
-        phone: phoneNumber.replace(/\s/g, ''),
-      });
+    
+    // try {
+    //   const { data, error } = await supabase.auth.signInWithOtp({
+    //     phone: phoneNumber.replace(/\s/g, ''),
+    //   });
 
-      if (error) throw error;
+    //   if (error) throw error;
 
-      setStep('otp');
-      setResendTimer(60);
-    } catch (error) {
-      setErrorMessage(error.message || 'Failed to send OTP');
-      setShowErrorModal(true);
-    }
-    */
+    //   setStep('otp');
+    //   setResendTimer(60);
+    // } catch (error) {
+    //   setErrorMessage(error.message || 'Failed to send OTP');
+    //   setShowErrorModal(true);
+    // }
+    
 
     // HARDCODED FOR PREVIEW:
     console.log("Sending OTP to:", phoneNumber);
@@ -98,24 +99,24 @@ export default function PhoneLogin() {
     if (resendTimer > 0) return;
 
     // ACTUAL SUPABASE IMPLEMENTATION (commented out):
-    /*
-    try {
-      const { error } = await supabase.auth.signInWithOtp({
-        phone: phoneNumber.replace(/\s/g, ''),
-      });
+    
+    // try {
+    //   const { error } = await supabase.auth.signInWithOtp({
+    //     phone: phoneNumber.replace(/\s/g, ''),
+    //   });
 
-      if (error) throw error;
+    //   if (error) throw error;
 
-      setResendTimer(60);
-    } catch (error) {
-      setErrorMessage(error.message || 'Failed to resend OTP');
-      setShowErrorModal(true);
-    }
-    */
+    //   setResendTimer(60);
+    // } catch (error) {
+    //   setErrorMessage(error.message || 'Failed to resend OTP');
+    //   setShowErrorModal(true);
+    // }
+    
 
-    // HARDCODED FOR PREVIEW:
-    console.log("Resending OTP to:", phoneNumber);
-    setResendTimer(60);
+    //   // HARDCODED FOR PREVIEW:
+    //   console.log("Resending OTP to:", phoneNumber);
+    //   setResendTimer(60);
   };
 
   const handleOtpChange = (value, index) => {
@@ -145,22 +146,22 @@ export default function PhoneLogin() {
     }
 
     // ACTUAL SUPABASE IMPLEMENTATION (commented out):
-    /*
-    try {
-      const { data, error } = await supabase.auth.verifyOtp({
-        phone: phoneNumber.replace(/\s/g, ''),
-        token: otpCode,
-        type: 'sms',
-      });
+    
+    // try {
+    //   const { data, error } = await supabase.auth.verifyOtp({
+    //     phone: phoneNumber.replace(/\s/g, ''),
+    //     token: otpCode,
+    //     type: 'sms',
+    //   });
 
-      if (error) throw error;
+    //   if (error) throw error;
 
-      router.replace('/(tabs)');
-    } catch (error) {
-      setErrorMessage('Invalid or expired code. Please try again.');
-      setShowErrorModal(true);
-    }
-    */
+    //   router.replace('/(tabs)');
+    // } catch (error) {
+    //   setErrorMessage('Invalid or expired code. Please try again.');
+    //   setShowErrorModal(true);
+    // }
+    
 
     // HARDCODED FOR PREVIEW:
     if (otpCode === "123456") {

@@ -7,12 +7,9 @@ const NotificationBell = ({ unreadCount, onPress }) => {
   };
 
   return (
-    <TouchableOpacity
-      onPress={handlePress}
-      style={styles.bellButton}
-    >
+    <TouchableOpacity onPress={handlePress} style={styles.bellButton}>
       <View style={styles.bellIconContainer}>
-        <Feather name="bell" size={24} color="#bd9e4b" />
+        <Feather name="bell" size={24} color="white" />
       </View>
       {unreadCount > 0 && (
         <View style={styles.badge}>
@@ -32,7 +29,7 @@ const styles = StyleSheet.create({
   bellIconContainer: {
     padding: 10,
     borderRadius: 10,
-    backgroundColor: "rgba(255, 255, 255, 0.25)",
+    // backgroundColor: "rgba(255, 255, 255, 0.25)",
     justifyContent: "center",
     alignItems: "center",
     shadowColor: "#bd9e4b",
