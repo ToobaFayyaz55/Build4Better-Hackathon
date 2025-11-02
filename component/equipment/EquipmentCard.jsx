@@ -58,10 +58,10 @@ export default function EquipmentCard({ equipment, activeTab, onPress, onEdit, o
                     // Owner's equipment shows Edit/Delete buttons
                     <View style={styles.myEquipmentButtons}>
                         <TouchableOpacity onPress={onEdit} style={styles.footerIcon}>
-                            <Ionicons name="pencil-outline" size={22} color="#4B5563" />
+                            <Ionicons name="pencil" size={22} color="#bd9e4b" />
                         </TouchableOpacity>
                         <TouchableOpacity onPress={onDelete} style={styles.footerIcon}>
-                            <Ionicons name="trash-outline" size={22} color="#DC2626" />
+                            <Ionicons name="trash-outline" size={22} color="#bd9e46" />
                         </TouchableOpacity>
                     </View>
                 ) : (

@@ -2,6 +2,9 @@ import { useState } from "react";
 import { Modal, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { supabase } from "../../lib/supabase";
 
+const PRIMARY = "#bd9e4b"; // Gold
+const BACKGROUND = "#fff";  // App-wide white
+
 export default function AddEquipmentModal({ visible, onClose, onAdded }) {
   const [name, setName] = useState("");
   const [category, setCategory] = useState("");
@@ -18,7 +21,7 @@ export default function AddEquipmentModal({ visible, onClose, onAdded }) {
 
     const { error } = await supabase.from("equipment").insert([
       {
-        owner_id: "demo-owner-1", // later replace with logged-in user's ID
+        owner_id: "demo-owner-1",
         name,
         category,
         specs,
@@ -44,22 +47,59 @@ export default function AddEquipmentModal({ visible, onClose, onAdded }) {
     <Modal visible={visible} animationType="slide" transparent>
       <View style={styles.overlay}>
         <View style={styles.modal}>
-          <ScrollView>
+          <ScrollView contentContainerStyle={{ paddingBottom: 20 }}>
             <Text style={styles.title}>Add New Equipment</Text>
 
-            <TextInput placeholder="Name" style={styles.input} value={name} onChangeText={setName} />
-            <TextInput placeholder="Category" style={styles.input} value={category} onChangeText={setCategory} />
+            <TextInput
+              placeholder="Name"
+              style={styles.input}
+              value={name}
+              onChangeText={setName}
+              placeholderTextColor="#999"
+            />
+            <TextInput
+              placeholder="Category"
+              style={styles.input}
+              value={category}
+              onChangeText={setCategory}
+              placeholderTextColor="#999"
+            />
             <TextInput
               placeholder="Specs / Details"
               style={[styles.input, { height: 80 }]}
               value={specs}
               onChangeText={setSpecs}
               multiline
+              placeholderTextColor="#999"
             />
-            <TextInput placeholder="Status (Available/Rented)" style={styles.input} value={status} onChangeText={setStatus} />
-            <TextInput placeholder="Rent Start (optional)" style={styles.input} value={rentStart} onChangeText={setRentStart} />
-            <TextInput placeholder="Rent End (optional)" style={styles.input} value={rentEnd} onChangeText={setRentEnd} />
-            <TextInput placeholder="Image URL (optional)" style={styles.input} value={imageUrl} onChangeText={setImageUrl} />
+            <TextInput
+              placeholder="Status (Available/Rented)"
+              style={styles.input}
+              value={status}
+              onChangeText={setStatus}
+              placeholderTextColor="#999"
+            />
+            <TextInput
+              placeholder="Rent Start (optional)"
+              style={styles.input}
+              value={rentStart}
+              onChangeText={setRentStart}
+              placeholderTextColor="#999"
+            />
+            <TextInput
+              placeholder="Rent End (optional)"
+              style={styles.input}
+              value={rentEnd}
+              onChangeText={setRentEnd}
+              placeholderTextColor="#999"
+            />
+            <TextInput
+              placeholder="Image URL (optional)"
+              style={styles.input}
+              value={imageUrl}
+              onChangeText={setImageUrl}
+              placeholderTextColor="#999"
+            />
 
             <TouchableOpacity style={styles.button} onPress={handleSubmit} disabled={loading}>
               <Text style={styles.buttonText}>{loading ? "Saving..." : "Save"}</Text>
@@ -83,7 +123,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   modal: {
-    backgroundColor: "white",
+    backgroundColor: BACKGROUND,
     borderRadius: 20,
     padding: 20,
     width: "90%",
@@ -92,29 +132,32 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     fontWeight: "bold",
-    color: "#bd9e4b",
-    marginBottom: 10,
+    color: PRIMARY,
+    marginBottom: 16,
     textAlign: "center",
   },
   input: {
     borderWidth: 1,
     borderColor: "#ccc",
-    borderRadius: 10,
-    padding: 10,
-    marginBottom: 10,
+    borderRadius: 12,
+    padding: 12,
+    marginBottom: 12,
+    backgroundColor: "#F9FAFB",
+    color: "#111",
   },
   button: {
-    backgroundColor: "#bd9e4b",
-    padding: 12,
-    borderRadius: 10,
+    backgroundColor: PRIMARY,
+    padding: 14,
+    borderRadius: 12,
     alignItems: "center",
-    marginBottom: 10,
+    marginBottom: 12,
   },
   cancel: {
     backgroundColor: "#aaa",
   },
   buttonText: {
-    color: "white",
+    color: BACKGROUND,
     fontWeight: "600",
+    fontSize: 16,
   },
 });
