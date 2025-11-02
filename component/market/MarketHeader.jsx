@@ -4,7 +4,7 @@ import { StyleSheet, Text, View } from "react-native";
 const MarketHeader = () => {
   return (
     <View style={styles.header}>
-      <Text style={styles.headerTitle}>Sahoolat Bazaar</Text>
+      <Text style={styles.headerTitle}>سہولت Bazaar</Text>
       <Feather name="map-pin" size={28} color="#bd9e4b" style={styles.icon} />
     </View>
   );

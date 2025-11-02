@@ -161,7 +161,7 @@ export default function InventoryScreen() {
       {/* Header + Filter */}
       <View style={styles.headerContainer}>
         <View>
-          <Text style={styles.title}>Fasal Watch</Text>
+          <Text style={styles.title}>فصل Watch</Text>
           <Text style={styles.countText}>
             {cropsList.length} crops • {batchesList.length} batches
           </Text>

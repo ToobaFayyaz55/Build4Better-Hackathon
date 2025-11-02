@@ -114,7 +114,7 @@ export default function EquipmentHub() {
     <SafeAreaView style={styles.container}>
       {/* Header */}
       <View style={styles.headerRow}>
-        <Text style={styles.headerText}>Machine Markaz</Text>
+        <Text style={styles.headerText}>Machine مرکز</Text>
         <View style={styles.headerActions}>
           <TouchableOpacity style={styles.iconButton}>
             <Ionicons name="notifications-outline" size={30} color="#111827" />

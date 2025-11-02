@@ -28,13 +28,11 @@ export default function AddEditEquipmentModal({
   const [specs, setSpecs] = useState("");
   const [images, setImages] = useState([]);
   const [status, setStatus] = useState(STATUS_OPTIONS[0]);
-  const [ownerName, setOwnerName] = useState("");
   const [ownerContact, setOwnerContact] = useState("");
   const [rentedTill, setRentedTill] = useState("");
 
   useEffect(() => {
     if (equipment) {
-      setName(equipment.name || "");
       setCategory(equipment.category || CATEGORIES[0]);
       setSpecs(equipment.specs || "");
       setImages(equipment.image_url ? [{ uri: equipment.image_url }] : []);
@@ -43,7 +41,6 @@ export default function AddEditEquipmentModal({
       setOwnerContact(equipment.owner_contact?.toString() || "");
       setRentedTill(equipment.rent_end || "");
     } else {
-      setName("");
       setCategory(CATEGORIES[0]);
       setSpecs("");
       setImages([]);
@@ -82,7 +79,6 @@ export default function AddEditEquipmentModal({
 
     onSave({
       ...equipment,
-      name,
       category,
       specs,
       status,
@@ -143,13 +139,6 @@ export default function AddEditEquipmentModal({
                 </TouchableOpacity>
               ))}
             </ScrollView>
-
-            <TextInput
-              placeholder="Owner Name"
-              value={ownerName}
-              onChangeText={setOwnerName}
-              style={styles.input}
-            />
             <TextInput
               placeholder="Owner Contact"
               value={ownerContact}
