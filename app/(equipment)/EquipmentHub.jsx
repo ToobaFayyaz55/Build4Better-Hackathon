@@ -1,123 +1,153 @@
-import { useEffect, useState } from "react";
+import { Ionicons } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
+import { useState } from "react";
 import {
-  ActivityIndicator,
-  FlatList,
-  SafeAreaView,
-  StatusBar,
+  ScrollView,
+  StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import AddEditEquipmentModal from "../../component/equipment/AddEditEquipmentModal";
 import EquipmentCard from "../../component/equipment/EquipmentCard";
-import { supabase } from "../../lib/supabase";
-import styles from "../../Styles/equipment/EquipmentHubStyles";
+import TabBar from "../../component/TabBar"; // make sure path is correct
+import { mockEquipment } from "../../constants/equipment";
 
 export default function EquipmentHub() {
-  const [equipmentList, setEquipmentList] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState("others");
+  const [activeTab, setActiveTab] = useState("my");
+  const [equipmentList, setEquipmentList] = useState(mockEquipment);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedEquipment, setSelectedEquipment] = useState(null);
 
-  useEffect(() => {
-    fetchOthersEquipment();
-  }, []);
+  const statusColors = {
+    Available: "#22C55E",
+    Rented: "#F59E0B",
+    "Under Maintenance": "#EF4444",
+  };
 
-  const fetchMyEquipment = async () => {
-    setLoading(true);
-    try {
-      const { data, error } = await supabase
-        .from("equipment")
-        .select("*")
-        .eq("owner_id", "YOUR_USER_ID"); // replace with auth user id
-      if (error) throw error;
-      setEquipmentList(data);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
+  const myEquipment = equipmentList.filter((eq) => eq.owner_id === 1);
+  const otherEquipment = equipmentList.filter((eq) => eq.owner_id !== 1);
+
+  const openAddModal = () => {
+    setSelectedEquipment(null);
+    setModalVisible(true);
+  };
+  const openEditModal = (eq) => {
+    setSelectedEquipment(eq);
+    setModalVisible(true);
+  };
+
+  const handleSave = (newEq) => {
+    if (newEq.id) {
+      setEquipmentList((prev) =>
+        prev.map((eq) => (eq.id === newEq.id ? newEq : eq))
+      );
+    } else {
+      setEquipmentList((prev) => [
+        ...prev,
+        { ...newEq, id: Date.now(), owner_id: 1 },
+      ]);
     }
+    setModalVisible(false);
   };
 
-  const fetchOthersEquipment = async () => {
-    setLoading(true);
-    try {
-      const { data, error } = await supabase
-        .from("equipment")
-        .select("*")
-        .neq("status", "Hidden");
-      if (error) throw error;
-      setEquipmentList(data);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const handleDelete = (id) =>
+    setEquipmentList((prev) => prev.filter((eq) => eq.id !== id));
 
-  const handleTabPress = (tab) => {
-    setActiveTab(tab);
-    if (tab === "mine") fetchMyEquipment();
-    else fetchOthersEquipment();
-  };
+  const equipmentTabs = [
+    { key: "my", label: "My Equipment" },
+    { key: "others", label: "Other Equipment" },
+  ];
 
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <StatusBar barStyle="dark-content" backgroundColor="#fff" />
-
+    <SafeAreaView style={styles.container}>
       {/* Header */}
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>Equipment Hub</Text>
+      <View style={styles.headerRow}>
+        <Text style={styles.headerText}>Equipment Hub</Text>
+        <View style={styles.headerActions}>
+          <TouchableOpacity style={styles.iconButton}>
+            <Ionicons name="notifications-outline" size={30} color="#111827" />
+            <View style={styles.badge}>
+              <Text style={styles.badgeText}>2</Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity style={{ borderRadius: 12 }} onPress={openAddModal}>
+            <LinearGradient
+              colors={["#bd9e4b", "#fde68a"]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={styles.addBtnGradient}
+            >
+              <Ionicons name="add" size={20} color="#fff" />
+            </LinearGradient>
+          </TouchableOpacity>
+        </View>
       </View>
 
-      {/* Tabs */}
-      <View style={styles.tabContainer}>
-        <TouchableOpacity
-          style={[styles.tab, activeTab === "mine" && styles.activeTab]}
-          onPress={() => handleTabPress("mine")}
-        >
-          <Text
-            style={[styles.tabText, activeTab === "mine" && styles.activeTabText]}
-          >
-            My Equipment
-          </Text>
-        </TouchableOpacity>
+      {/* Animated Tabs */}
+      <TabBar
+        selectedTab={activeTab}
+        setSelectedTab={setActiveTab}
+        tabs={equipmentTabs}
+      />
 
-        <TouchableOpacity
-          style={[styles.tab, activeTab === "others" && styles.activeTab]}
-          onPress={() => handleTabPress("others")}
-        >
-          <Text
-            style={[styles.tabText, activeTab === "others" && styles.activeTabText]}
-          >
-            Other's Equipment
-          </Text>
-        </TouchableOpacity>
-      </View>
+      {/* Equipment List */}
+      <ScrollView contentContainerStyle={{ padding: 20 }}>
+        {(activeTab === "my" ? myEquipment : otherEquipment).map((eq) => (
+          <EquipmentCard
+            key={eq.id}
+            equipment={eq}
+            activeTab={activeTab}
+            onPress={() => {}}
+            onEdit={() => openEditModal(eq)}
+            onDelete={() => handleDelete(eq.id)}
+            statusColors={statusColors}
+          />
+        ))}
+      </ScrollView>
 
-      {/* List */}
-      {loading ? (
-        <ActivityIndicator
-          size="large"
-          color="#bd9e4b"
-          style={{ marginTop: 50 }}
-        />
-      ) : (
-        <FlatList
-          data={equipmentList}
-          keyExtractor={(item) => item.id.toString()}
-          renderItem={({ item }) => <EquipmentCard equipment={item} />}
-          contentContainerStyle={styles.listContainer}
-          showsVerticalScrollIndicator={false}
-        />
-      )}
-
-       {/* Floating Add Button */}
-      <TouchableOpacity
-        style={styles.addButton}
-        onPress={() => router.push("/equipment/AddEditScreen")}
-      >
-        <Text style={styles.addButtonText}>＋</Text>
-      </TouchableOpacity>
-
+      {/* Add/Edit Modal */}
+      <AddEditEquipmentModal
+        visible={modalVisible}
+        equipment={selectedEquipment}
+        onClose={() => setModalVisible(false)}
+        onSave={handleSave}
+      />
     </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: { flex: 1, backgroundColor: "white" },
+  headerRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    backgroundColor: "#fff",
+  },
+  headerText: { fontSize: 22, fontWeight: "700", color: "#111827" },
+  headerActions: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+  },
+  iconButton: { position: "relative" },
+  badge: {
+    position: "absolute",
+    right: -6,
+    top: -6,
+    backgroundColor: "#bd9e4b",
+    borderRadius: 8,
+    paddingHorizontal: 4,
+  },
+  badgeText: { color: "#fff", fontSize: 10 },
+  addBtnGradient: {
+    padding: 10,
+    borderRadius: 12,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+});

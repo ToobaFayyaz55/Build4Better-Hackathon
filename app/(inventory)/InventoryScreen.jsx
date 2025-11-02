@@ -1,23 +1,25 @@
-import React, { useMemo, useState, useEffect } from "react";
+import { Ionicons } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
+import { useMemo, useState } from "react";
 import {
-  View,
-  Text,
   ScrollView,
-  TouchableOpacity,
   StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Ionicons } from "@expo/vector-icons";
-import FilterBar from "../../component/inventory/FilterBar";
 import AddItemModal from "../../component/inventory/AddItemModal";
 import BatchListModal from "../../component/inventory/BatchListModal";
 import CropCard from "../../component/inventory/CropCard";
 import { supabase } from "../../lib/supabase";
 
+import FilterBar from "../../component/inventory/FilterBar";
+
 const PRIMARY = "#bd9e4b";
 const defaultUserId = "00000000-0000-0000-0000-000000000000";
 
-/* MOCK DATA (same schema you provided) */
+/* MOCK DATA */
 const crops = [
   { id: 1, user_id: 1, crop_name: "Tomatoes", unit_type: "crates" },
   { id: 2, user_id: 1, crop_name: "Potatoes", unit_type: "kg" },
@@ -75,11 +77,9 @@ export default function InventoryScreen() {
     { key: "sold", label: "Sold out", active: false },
   ]);
 
-  // batch list modal state
   const [batchModalVisible, setBatchModalVisible] = useState(false);
   const [selectedCropId, setSelectedCropId] = useState(null);
 
-  // helper: compute summary per crop
   const cropSummaries = useMemo(() => {
     const map = {};
     cropsList.forEach((c) => {
@@ -102,7 +102,6 @@ export default function InventoryScreen() {
     return map;
   }, [cropsList, batchesList]);
 
-  // filtered crop list
   const activeFilterKey = filters.find((f) => f.active)?.key || "all";
   const displayedCrops = cropsList.filter((c) => {
     if (
@@ -157,41 +156,41 @@ export default function InventoryScreen() {
     setBatchesList(batchesData || []);
   }
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <View style={styles.container}>
-        {/* Header */}
-        <View style={styles.headerContainer}>
-          <View>
-            <Text style={styles.title}>Inventory Tracker</Text>
-            <Text style={styles.countText}>
-              {cropsList.length} crops • {batchesList.length} batches
-            </Text>
-          </View>
-
-          <TouchableOpacity
-            style={[styles.addBtn, { backgroundColor: PRIMARY }]}
-            onPress={() => setShowModal(true)}
-          >
-            <Ionicons name="add" size={20} color="#fff" />
-          </TouchableOpacity>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
+      {/* Header + Filter */}
+      <View style={styles.headerContainer}>
+        <View>
+          <Text style={styles.title}>Inventory Tracker</Text>
+          <Text style={styles.countText}>
+            {cropsList.length} crops • {batchesList.length} batches
+          </Text>
         </View>
 
-        {/* Filter bar */}
-
-        <FilterBar
-          searchTerm={searchTerm}
-          onSearchChange={setSearchTerm}
-          filters={filters}
-          onToggleFilter={toggleFilter}
-        />
-        {/* Separator */}
-        <View style={styles.sep} />
-
-        {/* Crop list */}
-        <ScrollView
-          style={styles.scroll}
-          contentContainerStyle={{ padding: 16, paddingBottom: 120 }}
+        <TouchableOpacity
+          style={{ borderRadius: 12 }}
+          onPress={() => setShowModal(true)}
         >
+          <LinearGradient
+            colors={["#bd9e4b", "#fde68a"]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={styles.addBtnGradient}
+          >
+            <Ionicons name="add" size={20} color="#fff" />
+          </LinearGradient>
+        </TouchableOpacity>
+      </View>
+
+      <FilterBar
+        searchTerm={searchTerm}
+        onSearchChange={setSearchTerm}
+        filters={filters}
+        onToggleFilter={toggleFilter}
+      />
+
+      {/* Crop list scrolls fully */}
+      <View style={{ flex: 1 }}>
+        <ScrollView contentContainerStyle={{ padding: 16 }}>
           {displayedCrops.map((c) => {
             const summary = cropSummaries[c.id] || {
               totalQty: 0,
@@ -205,12 +204,11 @@ export default function InventoryScreen() {
                 key={c.id}
                 crop={c}
                 batchesSummary={summary}
-                onViewBatches={(id) => openBatchModal(id)}
+                onViewBatches={openBatchModal}
               />
             );
           })}
 
-          {/* fallback */}
           {displayedCrops.length === 0 && (
             <View style={styles.empty}>
               <Text style={styles.emptyText}>
@@ -219,9 +217,10 @@ export default function InventoryScreen() {
             </View>
           )}
         </ScrollView>
+      </View>
 
-        {/* Add batch modal (your existing component) */}
-        {/* <AddItemModal
+      {/* Add batch modal (your existing component) */}
+      {/* <AddItemModal
           visible={showModal}
           onClose={() => setShowModal(false)}
           onAddItem={(newCrop, newBatch) => {
@@ -243,96 +242,120 @@ export default function InventoryScreen() {
           }}
         /> */}
 
-        <AddItemModal
-          visible={showModal}
-          onClose={() => setShowModal(false)}
-          onAddItem={async (newCrop, newBatch) => {
-            try {
-              // Get current user
-              const {
-                data: { user },
-              } = await supabase.auth.getUser();
+      <AddItemModal
+        visible={showModal}
+        onClose={() => setShowModal(false)}
+        onAddItem={async (newCrop, newBatch) => {
+          try {
+            // Get current user
+            const {
+              data: { user },
+            } = await supabase.auth.getUser();
 
-              if (!user) throw new Error("Not logged in");
+            if (!user) throw new Error("Not logged in");
 
-              // 1. Insert crop if it doesn't exist yet
-              let crop = cropsList.find(
-                (c) => c.crop_name === newCrop.crop_name
-              );
+            // 1. Insert crop if it doesn't exist yet
+            let crop = cropsList.find((c) => c.crop_name === newCrop.crop_name);
 
-              if (!crop) {
-                const cropToInsert = {
-                  ...newCrop,
-                  id: uuid.v4(), // UUID
-                  user_id: user.id, // Must include user_id
-                };
-
-                const { data: insertedCrop, error: cropError } = await supabase
-                  .from("crops")
-                  .insert([cropToInsert])
-                  .select()
-                  .single();
-
-                if (cropError) throw cropError;
-                crop = insertedCrop;
-                setCropsList([...cropsList, insertedCrop]);
-              }
-
-              // 2. Insert batch
-              const batchToInsert = {
-                ...newBatch,
-                id: defaultUserId, // UUID
-                crop_id: crop.id,
+            if (!crop) {
+              const cropToInsert = {
+                ...newCrop,
+                id: uuid.v4(), // UUID
+                user_id: user.id, // Must include user_id
               };
 
-              const { data: insertedBatch, error: batchError } = await supabase
-                .from("crop_batches")
-                .insert([batchToInsert])
+              const { data: insertedCrop, error: cropError } = await supabase
+                .from("crops")
+                .insert([cropToInsert])
                 .select()
                 .single();
 
-              if (batchError) throw batchError;
-              setBatchesList([...batchesList, insertedBatch]);
-            } catch (error) {
-              console.log("Error adding crop/batch:", error.message);
-              alert("Failed to add item. Check console for details.");
+              if (cropError) throw cropError;
+              crop = insertedCrop;
+              setCropsList([...cropsList, insertedCrop]);
             }
-          }}
-        />
-      </View>
+
+            // 2. Insert batch
+            const batchToInsert = {
+              ...newBatch,
+              id: defaultUserId, // UUID
+              crop_id: crop.id,
+            };
+
+            const { data: insertedBatch, error: batchError } = await supabase
+              .from("crop_batches")
+              .insert([batchToInsert])
+              .select()
+              .single();
+
+            if (batchError) throw batchError;
+            setBatchesList([...batchesList, insertedBatch]);
+          } catch (error) {
+            console.log("Error adding crop/batch:", error.message);
+            alert("Failed to add item. Check console for details.");
+          }
+        }}
+      />
+      {/* <BatchListModal
+  visible={batchModalVisible}
+  onClose={() => setBatchModalVisible(false)}
+  crop={selectedCrop || { crop_name: "" }}
+  batches={selectedBatches}
+  onUpdateBatch={(updatedBatch) => {
+    setBatchesList((prev) =>
+      prev.map((b) => (b.id === updatedBatch.id ? updatedBatch : b))
+    );
+  }}
+/> */}
+
+      <BatchListModal
+        visible={batchModalVisible}
+        onClose={() => setBatchModalVisible(false)}
+        crop={selectedCrop || { crop_name: "" }}
+        batches={selectedBatches}
+        onUpdateBatch={async (updatedBatch) => {
+          try {
+            const { data, error } = await supabase
+              .from("crop_batches")
+              .update({
+                sold_qty: updatedBatch.sold_qty,
+                status: updatedBatch.status,
+              })
+              .eq("id", updatedBatch.id)
+              .select()
+              .single();
+
+            if (error) throw error;
+
+            setBatchesList((prev) =>
+              prev.map((b) => (b.id === data.id ? data : b))
+            );
+          } catch (err) {
+            console.error("Failed to update batch:", err.message);
+          }
+        }}
+      />
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#F9FAFB" },
   headerContainer: {
     padding: 16,
-    paddingBottom: 22,
+    paddingBottom: 8,
     backgroundColor: "#fff",
-    borderBottomWidth: 1,
-    borderBottomColor: "#E5E7EB",
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
   },
-  filterBarWrapper: {
-    alignItems: "center", // centers horizontally
-    justifyContent: "center", // ensures the content is centered
-    paddingVertical: 6,
-  },
   title: { fontSize: 22, fontWeight: "700", color: "#111827" },
   countText: { color: "#6B7280", marginTop: 4 },
-  addBtn: { padding: 10, borderRadius: 12 },
-
-  sep: {
-    height: 8,
-    backgroundColor: "#fff",
-    borderBottomWidth: 1,
-    borderBottomColor: "#F3F4F6",
+  addBtnGradient: {
+    padding: 10,
+    borderRadius: 12,
+    alignItems: "center",
+    justifyContent: "center",
   },
-
-  scroll: { flex: 1 },
 
   empty: { padding: 20, alignItems: "center" },
   emptyText: { color: "#6B7280" },

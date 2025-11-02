@@ -1,53 +1,17 @@
+// app/_layout.jsx
 import { Stack } from "expo-router";
 import "../global.css";
 
-const _layout = () => {
+export default function Layout() {
   return (
     <Stack>
-      <Stack.Screen
-        name="index"
-        options={{
-          title: "Home (Sign Up/ LogIn)",
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
-        name="(dashboard)"
-        options={{
-          title: "Dashoard",
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
-        name="(inventory)"
-        options={{
-          title: "Inventory",
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
-        name="(equipment)"
-        options={{
-          title: "Equipment",
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
-        name="(market)"
-        options={{
-          title: "Market",
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
-        name="(bulletin)"
-        options={{
-          title: "Bulletin",
-          headerShown: false,
-        }}
-      />
+      <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+      <Stack.Screen name="(dashboard)" options={{ headerShown: false }} />
+      <Stack.Screen name="(inventory)" options={{ headerShown: false }} />
+      <Stack.Screen name="(equipment)" options={{ headerShown: false }} />
+      <Stack.Screen name="(market)" options={{ headerShown: false }} />
+      <Stack.Screen name="(bulletin)" options={{ headerShown: false }} />
+      <Stack.Screen name="Layout" options={{ headerShown: false }} />
     </Stack>
   );
-};
-
-export default _layout;
+}
