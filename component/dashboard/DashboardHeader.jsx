@@ -1,42 +1,41 @@
+import { LinearGradient } from "expo-linear-gradient";
 import { StyleSheet, Text, View } from "react-native";
 import NotificationBell from "./NotificationBell";
 
 const DashboardHeader = ({ unreadNotifications, onNotificationPress }) => {
   return (
-    <View style={styles.header}>
+    <LinearGradient
+      colors={["#8e793e", "#d4af37", "#bd9e4b"]}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 1 }}
+      style={styles.header}
+    >
       <View>
-        <Text style={styles.title}>Sabz Souch</Text>
-        <Text style={styles.subtitle}>Your Smart Farming Companion</Text>
+        <Text style={styles.title}>Sabz Umeed</Text>
       </View>
       <NotificationBell
         unreadCount={unreadNotifications}
         onPress={onNotificationPress}
       />
-    </View>
+    </LinearGradient>
   );
 };
 
 const styles = StyleSheet.create({
   header: {
-    backgroundColor: "#bd9e4b",
-    paddingHorizontal: 24,
-    paddingVertical: 24,
-    paddingTop: 50,
+    padding: 15,
+    paddingTop: 70,
     flexDirection: "row",
-    alignItems: "center",
+    alignItems: "flex-start",
     justifyContent: "space-between",
     borderBottomLeftRadius: 24,
     borderBottomRightRadius: 24,
   },
   title: {
-    fontSize: 28,
-    fontWeight: "bold",
+    fontSize: 22,
+    fontWeight: "700",
     color: "white",
     marginBottom: 4,
-  },
-  subtitle: {
-    fontSize: 14,
-    color: "#d1fae5",
   },
 });
 
