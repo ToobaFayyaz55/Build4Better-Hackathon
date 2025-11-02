@@ -11,7 +11,7 @@ const DashboardHeader = ({ unreadNotifications, onNotificationPress }) => {
       style={styles.header}
     >
       <View>
-        <Text style={styles.title}>Sabz Umeed</Text>
+        <Text style={styles.title}>سبز Umeed</Text>
       </View>
       <NotificationBell
         unreadCount={unreadNotifications}

@@ -23,21 +23,21 @@ export default function EquipmentCard({
   const isMyEquipment = activeTab === "my";
 
   const handleContact = () => {
-    if (!equipment.owner?.phone) {
+    if (!equipment.owner_contact) {
       Alert.alert("No contact available");
       return;
     }
-    const phoneNumber = equipment.owner.phone.replace(/[^0-9+]/g, "");
+    const phoneNumber = equipment.owner_contact.toString().replace(/[^0-9+]/g, "");
     Linking.openURL(`tel:${phoneNumber}`);
   };
 
-  const imagesToShow =
-    equipment.images && equipment.images.length > 0
-      ? equipment.images
-      : [require("../../assets/placeholder.jpeg")];
+  const imagesToShow = equipment.image_url
+    ? [{ uri: equipment.image_url }]
+    : [require("../../assets/placeholder.jpeg")];
 
   return (
     <TouchableOpacity style={styles.card} onPress={onPress}>
+      {/* Top Section */}
       <View style={styles.header}>
         <View style={{ flexShrink: 1 }}>
           <Text style={styles.title}>{equipment.name}</Text>
@@ -53,22 +53,25 @@ export default function EquipmentCard({
         </View>
       </View>
 
+      {/* Image Section */}
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
         {imagesToShow.map((img, i) => (
           <Image key={i} source={img} style={styles.image} />
         ))}
       </ScrollView>
 
-      <Text style={styles.condition}>{equipment.condition}</Text>
+      {/* Specs / Condition */}
+      <Text style={styles.condition}>{equipment.specs || "No details available"}</Text>
 
+      {/* Footer Section */}
       <View style={styles.footer}>
         {isMyEquipment ? (
           <View style={styles.actions}>
             <TouchableOpacity onPress={onEdit}>
-              <Ionicons name="pencil-outline" size={22} color="#4B5563" />
+              <Ionicons name="pencil" size={20} color="#4B5563" />
             </TouchableOpacity>
             <TouchableOpacity onPress={onDelete}>
-              <Ionicons name="trash-outline" size={22} color="#DC2626" />
+              <Ionicons name="trash-outline" size={20} color="#DC2626" />
             </TouchableOpacity>
           </View>
         ) : (
@@ -76,16 +79,16 @@ export default function EquipmentCard({
             <Text style={styles.owner}>
               Owner:{" "}
               <Text style={{ fontWeight: "700" }}>
-                {equipment.owner?.name || "N/A"}
+                {equipment.owner_name || "N/A"}
               </Text>
             </Text>
             <TouchableOpacity onPress={handleContact} style={styles.contactBtn}>
               <Text style={styles.contactText}>Contact</Text>
               <Ionicons
                 name="call-outline"
-                size={16}
+                size={14}
                 color="#fff"
-                style={{ marginLeft: 6 }}
+                style={{ marginLeft: 4 }}
               />
             </TouchableOpacity>
           </View>
@@ -97,7 +100,7 @@ export default function EquipmentCard({
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: "#fffffa",
+    backgroundColor: "#fffdf5", // unified soft off-white
     borderRadius: 14,
     padding: 12,
     marginBottom: 12,
@@ -105,51 +108,53 @@ const styles = StyleSheet.create({
     borderColor: "#e5e7eb",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.12,
-    shadowRadius: 4,
-    elevation: 3,
-    overflow: "hidden",
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 2,
   },
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    padding: 12,
-    backgroundColor: "#F9FAFB",
+    marginBottom: 8,
   },
-  title: { fontSize: 18, fontWeight: "800", color: "#1F2937" },
-  category: { fontSize: 13, color: "#6B7280" },
+  title: { fontSize: 16, fontWeight: "700", color: "#1F2937" },
+  category: { fontSize: 12, color: "#6B7280" },
   statusPill: {
     paddingHorizontal: 10,
-    paddingVertical: 5,
+    paddingVertical: 4,
     borderRadius: 16,
     alignItems: "center",
-    minWidth: 90,
   },
-  statusText: { color: "#fff", fontWeight: "700", fontSize: 12 },
-  image: { width: 300, height: 180, borderRadius: 10, margin: 6 },
+  statusText: { color: "#fff", fontWeight: "600", fontSize: 11 },
+  image: {
+    width: 220,
+    height: 130,
+    borderRadius: 10,
+    marginRight: 6,
+  },
   condition: {
-    padding: 12,
-    fontSize: 14,
+    paddingVertical: 8,
+    fontSize: 13,
     color: "#4B5563",
     borderBottomWidth: 1,
     borderBottomColor: "#F3F4F6",
   },
-  footer: { padding: 12 },
-  actions: { flexDirection: "row", justifyContent: "flex-end", gap: 16 },
+  footer: { paddingTop: 10 },
+  actions: { flexDirection: "row", justifyContent: "flex-end", gap: 14 },
   othersFooter: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
   },
-  owner: { fontSize: 14, color: "#4B5563" },
+  owner: { fontSize: 13, color: "#4B5563" },
   contactBtn: {
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: PRIMARY_GOLD,
-    paddingHorizontal: 14,
-    paddingVertical: 8,
-    borderRadius: 10,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 8,
   },
-  contactText: { color: "#fff", fontWeight: "700", fontSize: 15 },
+  contactText: { color: "#fff", fontWeight: "600", fontSize: 13 },
 });

@@ -1,6 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import {
   ScrollView,
   StyleSheet,
@@ -13,6 +13,7 @@ import AddItemModal from "../../component/inventory/AddItemModal";
 import BatchListModal from "../../component/inventory/BatchListModal";
 import CropCard from "../../component/inventory/CropCard";
 import { supabase } from "../../lib/supabase";
+import uuid from "react-native-uuid";
 
 import FilterBar from "../../component/inventory/FilterBar";
 
@@ -160,7 +161,7 @@ export default function InventoryScreen() {
       {/* Header + Filter */}
       <View style={styles.headerContainer}>
         <View>
-          <Text style={styles.title}>Inventory Tracker</Text>
+          <Text style={styles.title}>فصل Watch</Text>
           <Text style={styles.countText}>
             {cropsList.length} crops • {batchesList.length} batches
           </Text>
@@ -221,92 +222,105 @@ export default function InventoryScreen() {
 
       {/* Add batch modal (your existing component) */}
       {/* <AddItemModal
-          visible={showModal}
-          onClose={() => setShowModal(false)}
-          onAddItem={(newCrop, newBatch) => {
-            // Add new crop if it doesn't exist yet
-            let cropId = cropsList.find(
-              (c) => c.crop_name === newCrop.crop_name
-            )?.id;
-            if (!cropId) {
-              cropId = cropsList.length + 1; // simple ID
-              setCropsList([...cropsList, { ...newCrop, id: cropId }]);
-            }
+        visible={showModal}
+        onClose={() => setShowModal(false)}
+        onAddItem={(newCrop, newBatch) => {
+          // Add new crop if it doesn't exist yet
+          let cropId = cropsList.find(
+            (c) => c.crop_name === newCrop.crop_name
+          )?.id;
+          if (!cropId) {
+            cropId = cropsList.length + 1; // simple ID
+            setCropsList([...cropsList, { ...newCrop, id: cropId }]);
+          }
 
-            // Add new batch
-            const batchId = batchesList.length + 1;
-            setBatchesList([
-              ...batchesList,
-              { id: batchId, crop_id: cropId, ...newBatch },
-            ]);
-          }}
-        /> */}
+          // Add new batch
+          const batchId = batchesList.length + 1;
+          setBatchesList([
+            ...batchesList,
+            { id: batchId, crop_id: cropId, ...newBatch },
+          ]);
+        }}
+      /> */}
 
       <AddItemModal
         visible={showModal}
         onClose={() => setShowModal(false)}
         onAddItem={async (newCrop, newBatch) => {
           try {
-            // Get current user
-            const {
-              data: { user },
-            } = await supabase.auth.getUser();
-
-            if (!user) throw new Error("Not logged in");
-
-            // 1. Insert crop if it doesn't exist yet
-            let crop = cropsList.find((c) => c.crop_name === newCrop.crop_name);
+            // 1️⃣ Check if crop already exists
+            let crop = cropsList.find(
+              (c) =>
+                c.crop_name.toLowerCase() === newCrop.crop_name.toLowerCase()
+            );
 
             if (!crop) {
+              // Prepare crop data (no 'id', let DB generate)
               const cropToInsert = {
-                ...newCrop,
-                id: uuid.v4(), // UUID
-                user_id: user.id, // Must include user_id
+                crop_name: newCrop.crop_name,
+                unit_type: newCrop.unit_type,
+                category: newCrop.category || null, // optional
               };
 
-              const { data: insertedCrop, error: cropError } = await supabase
-                .from("crops")
-                .insert([cropToInsert])
-                .select()
-                .single();
+              console.log("Inserting crop:", cropToInsert);
+
+              // Insert crop into Supabase
+              const { data: insertedCropArray, error: cropError } =
+                await supabase.from("crops").insert([cropToInsert]).select(); // select returns the inserted row
 
               if (cropError) throw cropError;
-              crop = insertedCrop;
-              setCropsList([...cropsList, insertedCrop]);
+
+              crop = insertedCropArray[0]; // use the inserted crop
+              setCropsList([...cropsList, crop]);
             }
 
-            // 2. Insert batch
+            // 2️⃣ Insert batch linked to this crop
             const batchToInsert = {
-              ...newBatch,
-              id: defaultUserId, // UUID
-              crop_id: crop.id,
+              crop_id: crop.id, // BIGINT from DB
+              qty: newBatch.qty,
+              harvest_date: newBatch.harvest_date,
+              expiry_date: newBatch.expiry_date,
+              sold_qty: newBatch.sold_qty || 0,
+              status: newBatch.status || "Available",
             };
 
-            const { data: insertedBatch, error: batchError } = await supabase
-              .from("crop_batches")
-              .insert([batchToInsert])
-              .select()
-              .single();
+            console.log("Inserting batch:", batchToInsert);
+
+            const { data: insertedBatchArray, error: batchError } =
+              await supabase
+                .from("crop_batches")
+                .insert([batchToInsert])
+                .select();
 
             if (batchError) throw batchError;
+
+
+            const insertedBatch = insertedBatchArray[0]; 
             setBatchesList([...batchesList, insertedBatch]);
+
+            console.log(
+              "Inserted crop and batch successfully:",
+              crop,
+              insertedBatch
+            );
           } catch (error) {
-            console.log("Error adding crop/batch:", error.message);
+            console.error("Error adding crop/batch:", error);
             alert("Failed to add item. Check console for details.");
           }
         }}
       />
+
       {/* <BatchListModal
-  visible={batchModalVisible}
-  onClose={() => setBatchModalVisible(false)}
-  crop={selectedCrop || { crop_name: "" }}
-  batches={selectedBatches}
-  onUpdateBatch={(updatedBatch) => {
-    setBatchesList((prev) =>
-      prev.map((b) => (b.id === updatedBatch.id ? updatedBatch : b))
-    );
-  }}
-/> */}
+        visible={batchModalVisible}
+        onClose={() => setBatchModalVisible(false)}
+        crop={selectedCrop || { crop_name: "" }}
+        batches={selectedBatches}
+        onUpdateBatch={(updatedBatch) => {
+          setBatchesList((prev) =>
+            prev.map((b) => (b.id === updatedBatch.id ? updatedBatch : b))
+          );
+        }}
+      /> */}
 
       <BatchListModal
         visible={batchModalVisible}
@@ -321,14 +335,15 @@ export default function InventoryScreen() {
                 sold_qty: updatedBatch.sold_qty,
                 status: updatedBatch.status,
               })
-              .eq("id", updatedBatch.id)
-              .select()
-              .single();
+              .eq("id", updatedBatch.id);
+
+            const updated = data?.[0]; // <- get the first updated row safely
+            if (!updated) return;
 
             if (error) throw error;
 
             setBatchesList((prev) =>
-              prev.map((b) => (b.id === data.id ? data : b))
+              prev.map((b) => (b.id === updated.id ? updated : b))
             );
           } catch (err) {
             console.error("Failed to update batch:", err.message);

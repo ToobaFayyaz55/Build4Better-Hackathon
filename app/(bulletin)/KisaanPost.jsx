@@ -122,7 +122,7 @@ export default function KisaanPost() {
 
   const Header = () => (
     <View style={styles.headerRow}>
-      <Text style={styles.headerText}>Kisaan Post</Text>
+      <Text style={styles.headerText}>کسان Post</Text>
       <TouchableOpacity
         style={{ borderRadius: 12 }}
         onPress={() => {

@@ -7,7 +7,8 @@ import HomeDashboard from "./(dashboard)/Dashboard";
 import NotificationsScreen from "./(dashboard)/Notifications";
 import EquipmentHub from "./(equipment)/EquipmentHub";
 import InventoryScreen from "./(inventory)/InventoryScreen";
-import MarketWelcome from "./(market)/Market";
+import SahoolatBazaar from "./(market)/Market";
+
 
 const Layout = () => {
   const [activeTab, setActiveTab] = useState("home"); // default home
@@ -33,16 +34,17 @@ const Layout = () => {
         );
       case "inventory":
         return <InventoryScreen />;
-      case "markets":
-        return <MarketWelcome />;
+        case "markets":
+          return <SahoolatBazaar />;
       case "equipment":
         return <EquipmentHub />;
       case "community":
         return <KisaanPost />;
       default:
-        return <SplashScreen />;
+        return <SplashScreen/>;
     }
   };
+
 
   return (
     <View style={{ flex: 1 }}>
