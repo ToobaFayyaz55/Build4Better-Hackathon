@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import CreatePostModal from "../../component/bulletin/CreatePostModal";
 import PostCard from "../../component/bulletin/PostCard";
 import ProductCard from "../../component/bulletin/ProductCard";
@@ -83,7 +84,7 @@ export default function KisaanPost() {
   );
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Header />
       <TabBar selectedTab={selectedTab} setSelectedTab={setSelectedTab} />
       <View style={{ flex: 1, padding: 10 }}>{renderContent()}</View>
@@ -94,7 +95,7 @@ export default function KisaanPost() {
         onPost={createOrUpdatePost}
         postToEdit={editingPost}
       />
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -104,7 +105,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginTop: 30,
     paddingHorizontal: 10,
   },
   headerText: { fontSize: 22, fontWeight: "600", color: "#111827" },

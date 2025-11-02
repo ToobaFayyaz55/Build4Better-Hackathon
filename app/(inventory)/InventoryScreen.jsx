@@ -12,9 +12,10 @@ import AddItemModal from "../../component/inventory/AddItemModal";
 import BatchListModal from "../../component/inventory/BatchListModal";
 import CropCard from "../../component/inventory/CropCard";
 import FilterBar from "../../component/inventory/FilterBar";
+
 const PRIMARY = "#bd9e4b";
 
-/* MOCK DATA (same schema you provided) */
+/* MOCK DATA */
 const crops = [
   { id: 1, user_id: 1, crop_name: "Tomatoes", unit_type: "crates" },
   { id: 2, user_id: 1, crop_name: "Potatoes", unit_type: "kg" },
@@ -61,9 +62,9 @@ const crop_batches = [
 ];
 
 export default function InventoryScreen() {
-  const [cropsList, setCropsList] = useState(crops); // make crops editable
+  const [cropsList, setCropsList] = useState(crops);
   const [batchesList, setBatchesList] = useState(crop_batches);
-  const [showModal, setShowModal] = useState(false); // add batch modal
+  const [showModal, setShowModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [filters, setFilters] = useState([
     { key: "all", label: "All", active: true },
@@ -72,11 +73,9 @@ export default function InventoryScreen() {
     { key: "sold", label: "Sold out", active: false },
   ]);
 
-  // batch list modal state
   const [batchModalVisible, setBatchModalVisible] = useState(false);
   const [selectedCropId, setSelectedCropId] = useState(null);
 
-  // helper: compute summary per crop
   const cropSummaries = useMemo(() => {
     const map = {};
     cropsList.forEach((c) => {
@@ -99,7 +98,6 @@ export default function InventoryScreen() {
     return map;
   }, [cropsList, batchesList]);
 
-  // filtered crop list
   const activeFilterKey = filters.find((f) => f.active)?.key || "all";
   const displayedCrops = cropsList.filter((c) => {
     if (
@@ -132,41 +130,34 @@ export default function InventoryScreen() {
     : [];
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <View style={styles.container}>
-        {/* Header */}
-        <View style={styles.headerContainer}>
-          <View>
-            <Text style={styles.title}>Inventory Tracker</Text>
-            <Text style={styles.countText}>
-              {cropsList.length} crops • {batchesList.length} batches
-            </Text>
-          </View>
-
-          <TouchableOpacity
-            style={[styles.addBtn, { backgroundColor: PRIMARY }]}
-            onPress={() => setShowModal(true)}
-          >
-            <Ionicons name="add" size={20} color="#fff" />
-          </TouchableOpacity>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
+      {/* Header + Filter */}
+      <View style={styles.headerContainer}>
+        <View>
+          <Text style={styles.title}>Inventory Tracker</Text>
+          <Text style={styles.countText}>
+            {cropsList.length} crops • {batchesList.length} batches
+          </Text>
         </View>
 
-        {/* Filter bar */}
-
-        <FilterBar
-          searchTerm={searchTerm}
-          onSearchChange={setSearchTerm}
-          filters={filters}
-          onToggleFilter={toggleFilter}
-        />
-        {/* Separator */}
-        <View style={styles.sep} />
-
-        {/* Crop list */}
-        <ScrollView
-          style={styles.scroll}
-          contentContainerStyle={{ padding: 16, paddingBottom: 120 }}
+        <TouchableOpacity
+          style={[styles.addBtn, { backgroundColor: PRIMARY }]}
+          onPress={() => setShowModal(true)}
         >
+          <Ionicons name="add" size={20} color="#fff" />
+        </TouchableOpacity>
+      </View>
+
+      <FilterBar
+        searchTerm={searchTerm}
+        onSearchChange={setSearchTerm}
+        filters={filters}
+        onToggleFilter={toggleFilter}
+      />
+
+      {/* Crop list scrolls fully */}
+      <View style={{ flex: 1 }}>
+        <ScrollView contentContainerStyle={{ padding: 16 }}>
           {displayedCrops.map((c) => {
             const summary = cropSummaries[c.id] || {
               totalQty: 0,
@@ -180,12 +171,11 @@ export default function InventoryScreen() {
                 key={c.id}
                 crop={c}
                 batchesSummary={summary}
-                onViewBatches={(id) => openBatchModal(id)}
+                onViewBatches={openBatchModal}
               />
             );
           })}
 
-          {/* fallback */}
           {displayedCrops.length === 0 && (
             <View style={styles.empty}>
               <Text style={styles.emptyText}>
@@ -194,77 +184,56 @@ export default function InventoryScreen() {
             </View>
           )}
         </ScrollView>
-
-        {/* Add batch modal (your existing component) */}
-        <AddItemModal
-          visible={showModal}
-          onClose={() => setShowModal(false)}
-          onAddItem={(newCrop, newBatch) => {
-            // Add new crop if it doesn't exist yet
-            let cropId = cropsList.find(
-              (c) => c.crop_name === newCrop.crop_name
-            )?.id;
-            if (!cropId) {
-              cropId = cropsList.length + 1; // simple ID
-              setCropsList([...cropsList, { ...newCrop, id: cropId }]);
-            }
-
-            // Add new batch
-            const batchId = batchesList.length + 1;
-            setBatchesList([
-              ...batchesList,
-              { id: batchId, crop_id: cropId, ...newBatch },
-            ]);
-          }}
-        />
-
-        {/* Batch list modal for selected crop (re-uses InventoryCard for each batch) */}
-        <BatchListModal
-          visible={batchModalVisible}
-          onClose={() => setBatchModalVisible(false)}
-          crop={selectedCrop || { crop_name: "" }}
-          batches={selectedBatches}
-          onUpdateBatch={(updatedBatch) => {
-            setBatchesList((prev) =>
-              prev.map((b) => (b.id === updatedBatch.id ? updatedBatch : b))
-            );
-          }}
-        />
       </View>
+
+      {/* Add batch modal */}
+      <AddItemModal
+        visible={showModal}
+        onClose={() => setShowModal(false)}
+        onAddItem={(newCrop, newBatch) => {
+          let cropId = cropsList.find(
+            (c) => c.crop_name === newCrop.crop_name
+          )?.id;
+          if (!cropId) {
+            cropId = cropsList.length + 1;
+            setCropsList([...cropsList, { ...newCrop, id: cropId }]);
+          }
+          const batchId = batchesList.length + 1;
+          setBatchesList([
+            ...batchesList,
+            { id: batchId, crop_id: cropId, ...newBatch },
+          ]);
+        }}
+      />
+
+      {/* Batch list modal */}
+      <BatchListModal
+        visible={batchModalVisible}
+        onClose={() => setBatchModalVisible(false)}
+        crop={selectedCrop || { crop_name: "" }}
+        batches={selectedBatches}
+        onUpdateBatch={(updatedBatch) =>
+          setBatchesList((prev) =>
+            prev.map((b) => (b.id === updatedBatch.id ? updatedBatch : b))
+          )
+        }
+      />
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#F9FAFB" },
   headerContainer: {
     padding: 16,
-    paddingBottom: 22,
+    paddingBottom: 8,
     backgroundColor: "#fff",
-    borderBottomWidth: 1,
-    borderBottomColor: "#E5E7EB",
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
   },
-  filterBarWrapper: {
-    alignItems: "center", // centers horizontally
-    justifyContent: "center", // ensures the content is centered
-    paddingVertical: 6,
-  },
   title: { fontSize: 22, fontWeight: "700", color: "#111827" },
   countText: { color: "#6B7280", marginTop: 4 },
   addBtn: { padding: 10, borderRadius: 12 },
-
-  sep: {
-    height: 8,
-    backgroundColor: "#fff",
-    borderBottomWidth: 1,
-    borderBottomColor: "#F3F4F6",
-  },
-
-  scroll: { flex: 1 },
-
   empty: { padding: 20, alignItems: "center" },
   emptyText: { color: "#6B7280" },
 });
