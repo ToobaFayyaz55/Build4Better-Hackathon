@@ -23,8 +23,8 @@ export default function InventoryCard({ crop, batch }) {
       <Text style={styles.text}>
         Qty: {remaining} / {batch.qty} {crop.unit_type}
       </Text>
-      <Text style={styles.text}>Harvest: {batch.harvest_date}</Text>
-      <Text style={styles.text}>Expiry: {batch.expiry_date}</Text>
+      <Text style={styles.text}>Harvest: {new String(batch.harvest_date)}</Text>
+      <Text style={styles.text}>Expiry: {new String(batch.expiry_date)}</Text>
 
       <View style={styles.statusContainer}>
         <Text style={[styles.statusText, statusTextColor]}>{batch.status}</Text>

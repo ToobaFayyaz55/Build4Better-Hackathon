@@ -61,6 +61,38 @@ export default function EquipmentCard({
 
       <Text style={styles.condition}>{equipment.condition}</Text>
 
+<<<<<<< HEAD
+            {/* FOOTER: Action Buttons */}
+            <View style={styles.cardFooter}>
+                {isMyEquipment ? (
+                    // Owner's equipment shows Edit/Delete buttons
+                    <View style={styles.myEquipmentButtons}>
+                        <TouchableOpacity onPress={onEdit} style={styles.footerIcon}>
+                            <Ionicons name="pencil" size={22} color="#bd9e4b" />
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={onDelete} style={styles.footerIcon}>
+                            <Ionicons name="trash-outline" size={22} color="#bd9e46" />
+                        </TouchableOpacity>
+                    </View>
+                ) : (
+                    // Others' equipment shows Owner Name and 'Contact' button
+                    <View style={styles.othersEquipmentFooter}>
+                        <Text style={styles.footerOwnerName}>
+                            Owner: <Text style={{ fontWeight: '700' }}>{equipment.owner.name}</Text>
+                        </Text>
+                        
+                        {/* 3. The 'Contact' Button now calls handleContact */}
+                        <TouchableOpacity onPress={handleContact} style={styles.moreButton}> 
+                            <Text style={styles.moreButtonText}>Contact</Text>
+                            <Ionicons name="call-outline" size={16} color="#fff" style={{ marginLeft: 6 }} /> 
+                        </TouchableOpacity>
+                    </View>
+                )}
+            </View>
+            
+        </TouchableOpacity>
+    );
+=======
       <View style={styles.footer}>
         {isMyEquipment ? (
           <View style={styles.actions}>
@@ -93,6 +125,7 @@ export default function EquipmentCard({
       </View>
     </TouchableOpacity>
   );
+>>>>>>> 9979a112369c7930bbf46a57a8ff2fab73ff039d
 }
 
 const styles = StyleSheet.create({

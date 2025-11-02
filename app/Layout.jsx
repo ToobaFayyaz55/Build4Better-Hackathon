@@ -9,6 +9,7 @@ import EquipmentHub from "./(equipment)/EquipmentHub";
 import InventoryScreen from "./(inventory)/InventoryScreen";
 import SahoolatBazaar from "./(market)/Market";
 
+
 const Layout = () => {
   const [activeTab, setActiveTab] = useState("home"); // default home
   const [showNotifications, setShowNotifications] = useState(false);
@@ -40,9 +41,10 @@ const Layout = () => {
       case "community":
         return <KisaanPost />;
       default:
-        return <SplashScreen />;
+        return <SplashScreen/>;
     }
   };
+
 
   return (
     <View style={{ flex: 1 }}>
