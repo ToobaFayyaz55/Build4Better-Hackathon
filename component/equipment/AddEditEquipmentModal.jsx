@@ -15,7 +15,6 @@ import {
 
 const CATEGORIES = ["Tractor", "Harvester", "Plough", "Vehicle", "Seeder"];
 const STATUS_OPTIONS = ["Available", "Rented", "Under Maintenance"];
-const RENT_UNITS = ["Hours", "Days"];
 const PRIMARY_GOLD = "#bd9e4b";
 
 export default function AddEditEquipmentModal({
@@ -26,36 +25,38 @@ export default function AddEditEquipmentModal({
 }) {
   const [name, setName] = useState("");
   const [category, setCategory] = useState(CATEGORIES[0]);
-  const [condition, setCondition] = useState("");
+  const [specs, setSpecs] = useState("");
   const [images, setImages] = useState([]);
   const [status, setStatus] = useState(STATUS_OPTIONS[0]);
-  const [rentalNumber, setRentalNumber] = useState("");
-  const [rentalUnit, setRentalUnit] = useState(RENT_UNITS[0]);
+  const [ownerName, setOwnerName] = useState("");
+  const [ownerContact, setOwnerContact] = useState("");
+  const [rentedTill, setRentedTill] = useState("");
 
   useEffect(() => {
     if (equipment) {
       setName(equipment.name || "");
       setCategory(equipment.category || CATEGORIES[0]);
-      setCondition(equipment.condition || "");
-      setImages(equipment.images || []);
+      setSpecs(equipment.specs || "");
+      setImages(equipment.image_url ? [{ uri: equipment.image_url }] : []);
       setStatus(equipment.status || STATUS_OPTIONS[0]);
-      setRentalNumber(equipment.rentalNumber?.toString() || "");
-      setRentalUnit(equipment.rentalUnit || RENT_UNITS[0]);
+      setOwnerName(equipment.owner_name || "");
+      setOwnerContact(equipment.owner_contact?.toString() || "");
+      setRentedTill(equipment.rent_end || "");
     } else {
       setName("");
       setCategory(CATEGORIES[0]);
-      setCondition("");
+      setSpecs("");
       setImages([]);
       setStatus(STATUS_OPTIONS[0]);
-      setRentalNumber("");
-      setRentalUnit(RENT_UNITS[0]);
+      setOwnerName("");
+      setOwnerContact("");
+      setRentedTill("");
     }
   }, [equipment]);
 
   const pickImage = async () => {
-    const { status: perm } =
-      await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (perm !== "granted") {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== "granted") {
       Alert.alert(
         "Permission required",
         "Allow gallery access to select images."
@@ -76,23 +77,19 @@ export default function AddEditEquipmentModal({
   };
 
   const handleSave = () => {
-    if (!name.trim()) {
-      Alert.alert("Name required");
-      return;
-    }
-    if (images.length === 0) {
-      Alert.alert("At least 1 image required");
-      return;
-    }
+    if (!name.trim()) return Alert.alert("Name required");
+    if (images.length === 0) return Alert.alert("At least one image required");
+
     onSave({
       ...equipment,
       name,
       category,
-      condition,
-      images,
+      specs,
       status,
-      rentalNumber: rentalNumber ? parseInt(rentalNumber) : null,
-      rentalUnit,
+      image_url: images[0]?.uri || null,
+      owner_name: ownerName,
+      owner_contact: ownerContact ? parseInt(ownerContact) : null,
+      rent_end: status === "Rented" ? rentedTill : null,
     });
   };
 
@@ -105,18 +102,14 @@ export default function AddEditEquipmentModal({
           </Text>
           <ScrollView showsVerticalScrollIndicator={false}>
             <TextInput
-              placeholder="Equipment Name"
+              placeholder="Name"
               value={name}
               onChangeText={setName}
               style={styles.input}
             />
 
             <Text style={styles.label}>Category</Text>
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              style={{ marginBottom: 12 }}
-            >
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
               {CATEGORIES.map((cat) => (
                 <TouchableOpacity
                   key={cat}
@@ -130,21 +123,16 @@ export default function AddEditEquipmentModal({
               ))}
             </ScrollView>
 
-            <Text style={styles.label}>Condition / Specs</Text>
             <TextInput
-              placeholder="Engine, capacity..."
-              value={condition}
-              onChangeText={setCondition}
+              placeholder="Specs"
+              value={specs}
+              onChangeText={setSpecs}
               style={[styles.input, { height: 80 }]}
               multiline
             />
 
             <Text style={styles.label}>Status</Text>
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              style={{ marginBottom: 12 }}
-            >
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
               {STATUS_OPTIONS.map((s) => (
                 <TouchableOpacity
                   key={s}
@@ -156,62 +144,49 @@ export default function AddEditEquipmentModal({
               ))}
             </ScrollView>
 
+            <TextInput
+              placeholder="Owner Name"
+              value={ownerName}
+              onChangeText={setOwnerName}
+              style={styles.input}
+            />
+            <TextInput
+              placeholder="Owner Contact"
+              value={ownerContact}
+              onChangeText={setOwnerContact}
+              style={styles.input}
+              keyboardType="numeric"
+            />
+
             {status === "Rented" && (
-              <View style={{ marginBottom: 12 }}>
-                <Text style={styles.label}>Rental Duration</Text>
-                <View
-                  style={{ flexDirection: "row", gap: 8, alignItems: "center" }}
-                >
-                  <TextInput
-                    placeholder="Number"
-                    value={rentalNumber}
-                    onChangeText={setRentalNumber}
-                    keyboardType="numeric"
-                    style={[styles.input, { flex: 1, marginBottom: 0 }]}
-                  />
-                  <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                    {RENT_UNITS.map((unit) => (
-                      <TouchableOpacity
-                        key={unit}
-                        style={[
-                          styles.chip,
-                          rentalUnit === unit && styles.chipActive,
-                        ]}
-                        onPress={() => setRentalUnit(unit)}
-                      >
-                        <Text
-                          style={rentalUnit === unit ? { color: "#fff" } : {}}
-                        >
-                          {unit}
-                        </Text>
-                      </TouchableOpacity>
-                    ))}
-                  </ScrollView>
-                </View>
+              <View style={{ marginTop: 10 }}>
+                <Text style={styles.label}>Rented Till</Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder="DD/MM/YY"
+                  value={rentedTill}
+                  onChangeText={setRentedTill}
+                  keyboardType="default"
+                />
               </View>
             )}
 
             <Text style={styles.label}>Images</Text>
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              style={{ marginBottom: 12 }}
-            >
-              {images.map((img, i) => (
-                <View key={i} style={{ position: "relative", marginRight: 8 }}>
-                  <Image source={img} style={styles.image} />
-                  <TouchableOpacity
-                    style={styles.removeImageBtn}
-                    onPress={() => removeImage(i)}
-                  >
-                    <Ionicons name="close" size={16} color="#fff" />
-                  </TouchableOpacity>
-                </View>
-              ))}
+            {images[0] ? (
+              <View style={{ position: "relative", marginRight: 8 }}>
+                <Image source={images[0]} style={styles.image} />
+                <TouchableOpacity
+                  style={styles.removeImageBtn}
+                  onPress={() => setImages([])}
+                >
+                  <Ionicons name="close" size={16} color="#fff" />
+                </TouchableOpacity>
+              </View>
+            ) : (
               <TouchableOpacity onPress={pickImage} style={styles.addBtn}>
                 <Ionicons name="add" size={28} color="#fff" />
               </TouchableOpacity>
-            </ScrollView>
+            )}
           </ScrollView>
 
           <View style={styles.buttons}>
@@ -254,7 +229,6 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 10,
     marginBottom: 12,
-    justifyContent: "center",
   },
   label: { fontWeight: "700", marginBottom: 6 },
   chip: {
@@ -264,6 +238,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#D1D5DB",
     marginRight: 8,
+    marginBottom: 12,
   },
   chipActive: { backgroundColor: PRIMARY_GOLD, borderColor: PRIMARY_GOLD },
   image: { width: 120, height: 80, borderRadius: 8 },

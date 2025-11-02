@@ -13,7 +13,9 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import AddEditEquipmentModal from "../../component/equipment/AddEditEquipmentModal";
 import EquipmentCard from "../../component/equipment/EquipmentCard";
 import TabBar from "../../component/TabBar";
-import { supabase } from "../../lib/supabase"; // make sure you have this setup
+import { supabase } from "../../lib/supabase";
+
+const OWNER_ID = 1; // static for now (replace later with auth)
 
 export default function EquipmentHub() {
   const [activeTab, setActiveTab] = useState("my");
@@ -28,13 +30,12 @@ export default function EquipmentHub() {
     "Under Maintenance": "#EF4444",
   };
 
-  // Fetch all equipment from Supabase
   const fetchEquipment = async () => {
     try {
       setLoading(true);
-      const { data, error } = await supabase.from("equipment").select("*");
+      const { data, error } = await supabase.from("equipment").select("*").order("created_at", { ascending: false });
       if (error) throw error;
-      setEquipmentList(data);
+      setEquipmentList(data || []);
     } catch (error) {
       console.log("Error fetching equipment:", error.message);
       Alert.alert("Error", "Failed to fetch equipment");
@@ -47,8 +48,8 @@ export default function EquipmentHub() {
     fetchEquipment();
   }, []);
 
-  const myEquipment = equipmentList.filter((eq) => eq.owner_id === 1);
-  const otherEquipment = equipmentList.filter((eq) => eq.owner_id !== 1);
+  const myEquipment = equipmentList.filter((eq) => eq.owner_id === OWNER_ID);
+  const otherEquipment = equipmentList.filter((eq) => eq.owner_id !== OWNER_ID);
 
   const openAddModal = () => {
     setSelectedEquipment(null);
@@ -59,27 +60,33 @@ export default function EquipmentHub() {
     setModalVisible(true);
   };
 
-  // Save new or edited equipment
   const handleSave = async (newEq) => {
     try {
+      let response;
       if (newEq.id) {
-        // Update existing equipment
-        const { data, error } = await supabase
+        response = await supabase
           .from("equipment")
           .update(newEq)
-          .eq("id", newEq.id);
-        if (error) throw error;
+          .eq("id", newEq.id)
+          .select("*");
+      } else {
+        response = await supabase
+          .from("equipment")
+          .insert([{ ...newEq, owner_id: OWNER_ID }])
+          .select("*");
+      }
+
+      const { data, error } = response;
+      if (error) throw error;
+
+      if (newEq.id) {
         setEquipmentList((prev) =>
           prev.map((eq) => (eq.id === newEq.id ? data[0] : eq))
         );
       } else {
-        // Insert new equipment
-        const { data, error } = await supabase
-          .from("equipment")
-          .insert([{ ...newEq, owner_id: 1 }]);
-        if (error) throw error;
-        setEquipmentList((prev) => [...prev, data[0]]);
+        setEquipmentList((prev) => [data[0], ...prev]);
       }
+
       setModalVisible(false);
     } catch (error) {
       console.log("Error saving equipment:", error.message);
@@ -87,7 +94,6 @@ export default function EquipmentHub() {
     }
   };
 
-  // Delete equipment
   const handleDelete = async (id) => {
     try {
       const { error } = await supabase.from("equipment").delete().eq("id", id);
@@ -108,7 +114,7 @@ export default function EquipmentHub() {
     <SafeAreaView style={styles.container}>
       {/* Header */}
       <View style={styles.headerRow}>
-        <Text style={styles.headerText}>Equipment Hub</Text>
+        <Text style={styles.headerText}>Machine Markaz</Text>
         <View style={styles.headerActions}>
           <TouchableOpacity style={styles.iconButton}>
             <Ionicons name="notifications-outline" size={30} color="#111827" />
@@ -116,7 +122,7 @@ export default function EquipmentHub() {
               <Text style={styles.badgeText}>2</Text>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity style={{ borderRadius: 12 }} onPress={openAddModal}>
+          <TouchableOpacity onPress={openAddModal}>
             <LinearGradient
               colors={["#bd9e4b", "#fde68a"]}
               start={{ x: 0, y: 0 }}
@@ -136,24 +142,26 @@ export default function EquipmentHub() {
         tabs={equipmentTabs}
       />
 
-      {/* Equipment List */}
+      {/* List */}
       <ScrollView contentContainerStyle={{ padding: 20 }}>
         {loading ? (
           <Text>Loading...</Text>
-        ) : (activeTab === "my" ? myEquipment : otherEquipment).map((eq) => (
-          <EquipmentCard
-            key={eq.id}
-            equipment={eq}
-            activeTab={activeTab}
-            onPress={() => {}}
-            onEdit={() => openEditModal(eq)}
-            onDelete={() => handleDelete(eq.id)}
-            statusColors={statusColors}
-          />
-        ))}
+        ) : (activeTab === "my" ? myEquipment : otherEquipment).length === 0 ? (
+          <Text>No equipment found.</Text>
+        ) : (
+          (activeTab === "my" ? myEquipment : otherEquipment).map((eq) => (
+            <EquipmentCard
+              key={eq.id}
+              equipment={eq}
+              activeTab={activeTab}
+              onEdit={() => openEditModal(eq)}
+              onDelete={() => handleDelete(eq.id)}
+              statusColors={statusColors}
+            />
+          ))
+        )}
       </ScrollView>
 
-      {/* Add/Edit Modal */}
       <AddEditEquipmentModal
         visible={modalVisible}
         equipment={selectedEquipment}
@@ -172,14 +180,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: 16,
     paddingVertical: 12,
-    backgroundColor: "#fff",
   },
-  headerText: { fontSize: 22, fontWeight: "700", color: "#111827" },
-  headerActions: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 12,
-  },
+  headerText: { fontSize: 22, fontWeight: "700" },
+  headerActions: { flexDirection: "row", alignItems: "center", gap: 12 },
   iconButton: { position: "relative" },
   badge: {
     position: "absolute",
