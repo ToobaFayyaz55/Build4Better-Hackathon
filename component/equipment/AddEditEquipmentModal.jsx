@@ -77,11 +77,11 @@ export default function AddEditEquipmentModal({
 
     onSave({
       ...equipment,
+      name,
       category,
       specs,
       status,
       image_url: images[0]?.uri || null,
-      owner_name: ownerName,
       owner_contact: ownerContact ? parseInt(ownerContact) : null,
       rent_end: status === "Rented" ? rentedTill : null,
     });
