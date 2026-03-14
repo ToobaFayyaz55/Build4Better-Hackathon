@@ -13,58 +13,8 @@ import AddItemModal from "../../component/inventory/AddItemModal";
 import BatchListModal from "../../component/inventory/BatchListModal";
 import CropCard from "../../component/inventory/CropCard";
 import { supabase } from "../../lib/supabase";
-import uuid from "react-native-uuid";
 
 import FilterBar from "../../component/inventory/FilterBar";
-
-const PRIMARY = "#bd9e4b";
-const defaultUserId = "00000000-0000-0000-0000-000000000000";
-
-/* MOCK DATA */
-const crops = [
-  { id: 1, user_id: 1, crop_name: "Tomatoes", unit_type: "crates" },
-  { id: 2, user_id: 1, crop_name: "Potatoes", unit_type: "kg" },
-  { id: 3, user_id: 1, crop_name: "Spinach", unit_type: "kg" },
-];
-
-const crop_batches = [
-  {
-    id: 1,
-    crop_id: 1,
-    qty: 20,
-    harvest_date: "2025-10-15",
-    expiry_date: "2025-11-05",
-    sold_qty: 5,
-    status: "Available",
-  },
-  {
-    id: 2,
-    crop_id: 1,
-    qty: 10,
-    harvest_date: "2025-10-20",
-    expiry_date: "2025-11-07",
-    sold_qty: 1,
-    status: "Available",
-  },
-  {
-    id: 3,
-    crop_id: 2,
-    qty: 100,
-    harvest_date: "2025-10-10",
-    expiry_date: "2025-11-20",
-    sold_qty: 80,
-    status: "Expiring Soon",
-  },
-  {
-    id: 4,
-    crop_id: 3,
-    qty: 40,
-    harvest_date: "2025-10-25",
-    expiry_date: "2025-11-10",
-    sold_qty: 40,
-    status: "Sold Out",
-  },
-];
 
 export default function InventoryScreen() {
   const [cropsList, setCropsList] = useState([]); // make crops editable
@@ -220,29 +170,6 @@ export default function InventoryScreen() {
         </ScrollView>
       </View>
 
-      {/* Add batch modal (your existing component) */}
-      {/* <AddItemModal
-        visible={showModal}
-        onClose={() => setShowModal(false)}
-        onAddItem={(newCrop, newBatch) => {
-          // Add new crop if it doesn't exist yet
-          let cropId = cropsList.find(
-            (c) => c.crop_name === newCrop.crop_name
-          )?.id;
-          if (!cropId) {
-            cropId = cropsList.length + 1; // simple ID
-            setCropsList([...cropsList, { ...newCrop, id: cropId }]);
-          }
-
-          // Add new batch
-          const batchId = batchesList.length + 1;
-          setBatchesList([
-            ...batchesList,
-            { id: batchId, crop_id: cropId, ...newBatch },
-          ]);
-        }}
-      /> */}
-
       <AddItemModal
         visible={showModal}
         onClose={() => setShowModal(false)}
@@ -309,19 +236,6 @@ export default function InventoryScreen() {
           }
         }}
       />
-
-      {/* <BatchListModal
-        visible={batchModalVisible}
-        onClose={() => setBatchModalVisible(false)}
-        crop={selectedCrop || { crop_name: "" }}
-        batches={selectedBatches}
-        onUpdateBatch={(updatedBatch) => {
-          setBatchesList((prev) =>
-            prev.map((b) => (b.id === updatedBatch.id ? updatedBatch : b))
-          );
-        }}
-      /> */}
-
       <BatchListModal
         visible={batchModalVisible}
         onClose={() => setBatchModalVisible(false)}

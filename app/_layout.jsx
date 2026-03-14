@@ -11,7 +11,7 @@ export default function Layout() {
       <Stack.Screen name="(equipment)" options={{ headerShown: false }} />
       <Stack.Screen name="(market)" options={{ headerShown: false }} />
       <Stack.Screen name="(bulletin)" options={{ headerShown: false }} />
-      <Stack.Screen name="Layout" options={{ headerShown: false }} />
+      <Stack.Screen name="index" options={{ headerShown: false }} />
     </Stack>
   );
 }

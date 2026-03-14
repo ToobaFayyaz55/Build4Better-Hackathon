@@ -8,7 +8,7 @@ import {
   StyleSheet,
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
-import CalendarPicker from "react-native-calendar-picker";
+// import CalendarPicker from "react-native-calendar-picker";
 import { calculateExpiryDate, calculateStatus } from "../../utils/addItemsUtils";
 
 export default function AddItemModal({ visible, onClose, onAddItem  }) {
@@ -89,7 +89,7 @@ export default function AddItemModal({ visible, onClose, onAddItem  }) {
           <View style={styles.dropdownContainer}>
             <Text style={styles.label}>Category</Text>
             <View style={styles.pickerWrapper}>
-              <Picker
+              {/* <Picker
                 selectedValue={category}
                 onValueChange={(itemValue) => setCategory(itemValue)}
                 style={styles.picker}
@@ -97,14 +97,14 @@ export default function AddItemModal({ visible, onClose, onAddItem  }) {
                 <Picker.Item label="Fruits & Vegetables" value="fruits" />
                 <Picker.Item label="Grains & Pulses" value="grains" />
                 <Picker.Item label="Oilseeds & Dry Products" value="oilseeds" />
-              </Picker>
+              </Picker> */}
             </View>
           </View>
 
           {/* Harvest Date Picker */}
           <View style={styles.calendarContainer}>
             <Text style={styles.label}>Harvest Date</Text>
-            <CalendarPicker
+            {/* <CalendarPicker
               onDateChange={(date) => setHarvestDate(date)}
               selectedStartDate={harvestDate}
               todayBackgroundColor="#bd9e4b33"
@@ -115,7 +115,7 @@ export default function AddItemModal({ visible, onClose, onAddItem  }) {
               dayShape="square" // optional: square days to save space
               dayTextStyle={{ fontSize: 12 }} // smaller day numbers
               monthTitleStyle={{ fontSize: 14 }}
-            />
+            /> */}
           </View>
 
           {harvestDate && (

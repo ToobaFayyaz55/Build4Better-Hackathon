@@ -8,7 +8,7 @@ import {
   StyleSheet,
   TextInput,
 } from "react-native";
-import CalendarPicker from "react-native-calendar-picker";
+// import CalendarPicker from "react-native-calendar-picker";
 import InventoryCard from "./InventoryCard";
 import { updateSoldQuantity, calculateExpiryDate, calculateStatus } from "../../utils/addItemsUtils";
 
@@ -184,7 +184,7 @@ export default function BatchListModal({ visible, onClose, crop, batches, onUpda
 
             {/* Calendar Picker */}
             <Text style={{ marginTop: 12, marginBottom: 6 }}>Harvest Date</Text>
-            <CalendarPicker
+            {/* <CalendarPicker
               onDateChange={(date) => setHarvestDate(date)}
               selectedStartDate={harvestDate}
               todayBackgroundColor="#bd9e4b33"
@@ -195,7 +195,7 @@ export default function BatchListModal({ visible, onClose, crop, batches, onUpda
               dayShape="square"
               dayTextStyle={{ fontSize: 12 }}
               monthTitleStyle={{ fontSize: 14 }}
-            />
+            /> */}
             {harvestDate && (
               <Text style={{ marginTop: 6 }}>
                 Selected: {harvestDate.toISOString().split("T")[0]}

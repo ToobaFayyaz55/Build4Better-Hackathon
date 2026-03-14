@@ -166,7 +166,7 @@ export default function PhoneLogin() {
     // HARDCODED FOR PREVIEW:
     if (otpCode === "123456") {
       console.log("OTP Verified Successfully");
-      router.replace("/Layout");
+      router.replace("/");
     } else {
       setErrorMessage("Invalid verification code. Please try again.");
       setShowErrorModal(true);

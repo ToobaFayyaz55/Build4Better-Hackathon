@@ -5,7 +5,7 @@ const _layout = () => {
   return (
     <Stack>
       <Stack.Screen
-        name="AddInventoryPage"
+        name="InventoryScreen"
         options={{
           title: "Page name",
           headerShown: false,
