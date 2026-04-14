@@ -7,7 +7,6 @@
     "icon": "./assets/images/icon.png",
     "scheme": "build4betterhackathon",
     "userInterfaceStyle": "automatic",
-    "newArchEnabled": true,
     "ios": {
       "supportsTablet": true
     },
@@ -18,7 +17,6 @@
         "backgroundImage": "./assets/images/android-icon-background.png",
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
-      "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
       "package": "com.hishaque06.Build4BetterHackathon"
     },
@@ -42,6 +40,12 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "a1d37a33-67a5-4fde-9c78-a0b647abff56"
+      }
+    },
+    "owner": "raafiafatimaz6"
   }
 }
