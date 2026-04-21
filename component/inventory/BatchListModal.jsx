@@ -63,9 +63,16 @@ export default function BatchListModal({ visible, onClose, crop, batches, onUpda
       return;
     }
 
+    // Format date safely
+    const formattedHarvest = new Date(harvestDate.toISOString().split("T")[0])
+
+    // const expiry_date = new Date(calculateExpiryDate(harvestDate, crop.category || "fruits"))
+
     const newBatchObj = {
       qty: qtyInt,
       sold_qty: 0,
+      // harvest_date: formattedHarvest,
+      // expiry_date,
     };
 
     const status = calculateStatus(newBatchObj);
@@ -176,7 +183,7 @@ export default function BatchListModal({ visible, onClose, crop, batches, onUpda
             />
 
             {/* Calendar Picker */}
-            <Text style={{ marginTop: 12, marginBottom: 6 }}>Harvest Date</Text>
+            {/* <Text style={{ marginTop: 12, marginBottom: 6 }}>Harvest Date</Text> */}
             {/* <CalendarPicker
               onDateChange={(date) => setHarvestDate(date)}
               selectedStartDate={harvestDate}

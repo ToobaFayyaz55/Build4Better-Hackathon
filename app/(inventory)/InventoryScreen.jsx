@@ -67,8 +67,9 @@ export default function InventoryScreen() {
       return (summary.counts["Expiring Soon"] || 0) > 0;
     if (activeFilterKey === "sold")
       return (summary.counts["Sold Out"] || 0) > 0;
-    return true;
   });
+  console.log("Displayed crops for filter:", activeFilterKey);
+  console.table(displayedCrops);
 
   function toggleFilter(key) {
     setFilters((prev) => prev.map((f) => ({ ...f, active: f.key === key })));
@@ -105,6 +106,8 @@ export default function InventoryScreen() {
 
     setCropsList(cropsData || []);
     setBatchesList(batchesData || []);
+    console.log("Fetched crops:", cropsData);
+    console.log("Fetched crop_batches:", batchesData);
   }
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
@@ -178,7 +181,7 @@ export default function InventoryScreen() {
             // 1️⃣ Check if crop already exists
             let crop = cropsList.find(
               (c) =>
-                c.crop_name.toLowerCase() === newCrop.crop_name.toLowerCase()
+                c.crop_name.toLowerCase() === newCrop.crop_name.toLowerCase(),
             );
 
             if (!crop) {
@@ -221,14 +224,13 @@ export default function InventoryScreen() {
 
             if (batchError) throw batchError;
 
-
-            const insertedBatch = insertedBatchArray[0]; 
+            const insertedBatch = insertedBatchArray[0];
             setBatchesList([...batchesList, insertedBatch]);
 
             console.log(
               "Inserted crop and batch successfully:",
               crop,
-              insertedBatch
+              insertedBatch,
             );
           } catch (error) {
             console.error("Error adding crop/batch:", error);
@@ -251,22 +253,15 @@ export default function InventoryScreen() {
               })
               .eq("id", updatedBatch.id);
 
-            // Check error FIRST before using data
-            if (error) {
-              console.error("Supabase error:", error);
-              throw new Error(error.message || "Failed to update batch");
-            }
-
-            const updated = data?.[0];
+            const updated = data?.[0]; // <- get the first updated row safely
             if (!updated) {
-              throw new Error("No data returned from update. Batch may not exist.");
+              console.error("Update failed: Invalid batch ID");
+              return;
             }
-
-            console.log("Batch updated successfully:", updated);
-
+            console.log('Batch updated Successfully', updated)
             setBatchesList((prev) =>
-              prev.map((b) => (b.id === updated.id ? updated : b))
-            );
+              prev.map((b) => (b.id === updated.id ? updated : b)),
+          );
           } catch (err) {
             console.error("Failed to update batch:", err.message);
           }
