@@ -1,16 +1,16 @@
-import React, { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
-  Modal,
-  View,
-  Text,
-  TouchableOpacity,
   FlatList,
+  Modal,
   StyleSheet,
+  Text,
   TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
 // import CalendarPicker from "react-native-calendar-picker";
+import { calculateStatus, updateSoldQuantity } from "../../utils/addItemsUtils";
 import InventoryCard from "./InventoryCard";
-import { updateSoldQuantity, calculateExpiryDate, calculateStatus } from "../../utils/addItemsUtils";
 
 const PRIMARY = "#bd9e4b";
 

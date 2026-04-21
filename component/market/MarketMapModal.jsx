@@ -2,6 +2,7 @@ import * as Location from "expo-location";
 import { useEffect, useState } from "react";
 import { ActivityIndicator, Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import MapView, { Marker } from "react-native-maps";
+import { PROVIDER_GOOGLE } from "react-native-maps";
 
 const MarketMapModal = ({ visible, onRequestClose, onLocationSelect }) => {
   const [region, setRegion] = useState(null);
@@ -51,6 +52,7 @@ const MarketMapModal = ({ visible, onRequestClose, onLocationSelect }) => {
         ) : region ? (
           <MapView
             style={styles.map}
+            provider={PROVIDER_GOOGLE}
             region={region}
             onPress={(e) => setMarker(e.nativeEvent.coordinate)}
             showsUserLocation

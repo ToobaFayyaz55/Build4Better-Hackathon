@@ -34,7 +34,8 @@ export default function KisaanPost() {
       .select("*")
       .order("created_at", { ascending: false });
 
-    if (error) console.error("Error fetching posts:", error.message);
+    if (error) {console.error("Error fetching posts:", error.message);
+    alert("Error fetching posts. Check your connection and try again.");}
     else setPosts(data || []);
     setLoading(false);
   };
@@ -56,7 +57,9 @@ export default function KisaanPost() {
 
   const handleDeletePost = async (postId) => {
     const { error } = await supabase.from("bulletin").delete().eq("id", postId);
-    if (error) console.error("Delete error:", error.message);
+    alert("Post deleted successfully.");
+    if (error) {console.error("Delete error:", error.message);
+      alert("Failed to delete post. Check your connection and try again.");}
     else fetchPosts();
   };
 

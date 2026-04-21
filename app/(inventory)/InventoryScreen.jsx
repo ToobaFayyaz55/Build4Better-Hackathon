@@ -1,6 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
-import { useMemo, useState, useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   ScrollView,
   StyleSheet,
@@ -189,7 +189,7 @@ export default function InventoryScreen() {
               const cropToInsert = {
                 crop_name: newCrop.crop_name,
                 unit_type: newCrop.unit_type,
-                category: newCrop.category || null, // optional
+                // category: newCrop.category || null, // optional
               };
 
               console.log("Inserting crop:", cropToInsert);
@@ -208,8 +208,8 @@ export default function InventoryScreen() {
             const batchToInsert = {
               crop_id: crop.id, // BIGINT from DB
               qty: newBatch.qty,
-              harvest_date: newBatch.harvest_date,
-              expiry_date: newBatch.expiry_date,
+              // harvest_date: newBatch.harvest_date,
+              // expiry_date: newBatch.expiry_date,
               sold_qty: newBatch.sold_qty || 0,
               status: newBatch.status || "Available",
             };
@@ -234,7 +234,7 @@ export default function InventoryScreen() {
             );
           } catch (error) {
             console.error("Error adding crop/batch:", error);
-            alert("Failed to add item. Check console for details.");
+            alert("Failed to add item. Please try again.");
           }
         }}
       />

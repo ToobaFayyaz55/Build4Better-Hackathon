@@ -1,15 +1,15 @@
-import React, { useState } from "react";
+import { Picker } from "@react-native-picker/picker";
+import { useState } from "react";
 import {
-  View,
-  Text,
-  TouchableOpacity,
-  TextInput,
   Modal,
   StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
-import { Picker } from "@react-native-picker/picker";
 // import CalendarPicker from "react-native-calendar-picker";
-import { calculateExpiryDate, calculateStatus } from "../../utils/addItemsUtils";
+import { calculateStatus } from "../../utils/addItemsUtils";
 
 export default function AddItemModal({ visible, onClose, onAddItem  }) {
   const [cropName, setCropName] = useState("");

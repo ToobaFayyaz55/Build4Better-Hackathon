@@ -57,8 +57,10 @@ const SahoolatBazaar = () => {
     const result = await getMarkets();
     if (result.success) {
       setMarkets(result.data);
+      console.log("Fetched markets:", result.data);
     } else {
-      alert("Error loading markets: " + result.error);
+      alert("Error loading markets: " + result.error)
+      console.error("Error fetching markets:", result.error);
     }
     setLoading(false);
   };
@@ -87,11 +89,13 @@ const SahoolatBazaar = () => {
       const { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== "granted") {
         alert("Permission to access location was denied.");
+        console.error("Location permission denied");
         return;
       }
 
       const location = await Location.getCurrentPositionAsync({});
       const { latitude, longitude } = location.coords;
+      console.log("Current location Accessed:", latitude, longitude);
 
       setFormData({
         ...formData,
@@ -103,6 +107,7 @@ const SahoolatBazaar = () => {
       setShowAddMarketForm(true);
     } catch (error) {
       alert("Could not fetch current location. Please enter coordinates manually.");
+      console.error("Error fetching current location:", error);
       setShowAddModal(false);
       setShowAddMarketForm(true);
     }
@@ -138,11 +143,13 @@ const SahoolatBazaar = () => {
   const handleSaveMarket = async () => {
     if (!formData.name.trim()) {
       alert("Please enter a market name");
+      console.error("Market name is required");
       return;
     }
 
     if (!formData.latitude || !formData.longitude) {
       alert("Please enter valid latitude and longitude coordinates");
+      console.error("Latitude and Longitude are required");
       return;
     }
 
@@ -158,9 +165,11 @@ const SahoolatBazaar = () => {
     const result = await addMarket(newMarket);
     if (result.success) {
       await fetchMarkets(); // refresh the list
+      console.log("Market added successfully:", result.data);
       closeForm();
     } else {
       alert("Error saving market: " + result.error);
+      console.error("Error saving market:", result.error);
     }
   };
 
@@ -171,8 +180,10 @@ const SahoolatBazaar = () => {
       setMarkets(markets.filter((m) => m.id !== marketId));
       setShowMarketDetailModal(false);
       setSelectedMarket(null);
+      console.log("Market deleted successfully");
     } else {
       alert("Error deleting market: " + result.error);
+      console.error("Error deleting market:", result.error);
     }
   };
 
