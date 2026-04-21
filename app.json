@@ -35,17 +35,19 @@
             "backgroundColor": "#000000"
           }
         }
-      ]
+      ],
+      "expo-router",
+      "expo-web-browser"
     ],
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
     },
     "extra": {
+      "router": {},
       "eas": {
-        "projectId": "a1d37a33-67a5-4fde-9c78-a0b647abff56"
+        "projectId": "26dc3baa-358c-42d5-a7eb-ab3338583be0"
       }
-    },
-    "owner": "raafiafatimaz6"
+    }
   }
 }
