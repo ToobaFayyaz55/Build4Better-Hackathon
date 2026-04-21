@@ -1,15 +1,15 @@
-import React, { useState } from "react";
+import { Picker } from "@react-native-picker/picker";
+import { useState } from "react";
 import {
-  View,
-  Text,
-  TouchableOpacity,
-  TextInput,
   Modal,
   StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
-import { Picker } from "@react-native-picker/picker";
 // import CalendarPicker from "react-native-calendar-picker";
-import { calculateExpiryDate, calculateStatus } from "../../utils/addItemsUtils";
+import { calculateStatus } from "../../utils/addItemsUtils";
 
 export default function AddItemModal({ visible, onClose, onAddItem  }) {
   const [cropName, setCropName] = useState("");
@@ -19,14 +19,14 @@ export default function AddItemModal({ visible, onClose, onAddItem  }) {
   const [harvestDate, setHarvestDate] = useState(null);
   
   const handleAdd = () => {
-    if (!cropName || !quantity || !harvestDate) return;
+    if (!cropName || !quantity) return;
     
-    const expiryDate = calculateExpiryDate(harvestDate, category);
-    const newCrop = {crop_name: cropName, unit_type: unitType, category };
+    // const expiryDate = calculateExpiryDate(harvestDate, category);
+    const newCrop = {crop_name: cropName, unit_type: unitType};
     const newBatch = {
       qty: parseInt(quantity),
-      harvest_date: harvestDate.toISOString().split("T")[0],
-      expiry_date: expiryDate,
+      // harvest_date: harvestDate.toISOString().split("T")[0],
+      // expiry_date: expiryDate,
       sold_qty: 0,
     };
     newBatch.status = calculateStatus(newBatch);

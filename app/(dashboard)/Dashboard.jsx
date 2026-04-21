@@ -15,11 +15,14 @@ const HomeDashboard = ({ setActiveTab, onShowNotifications }) => {
       case "produce":
       case "fresh":
         setActiveTab("inventory");
+        console.log("Navigating to Inventory with filter:", statId);
         break;
       case "equipment":
         setActiveTab("equipment");
+        console.log("Navigating to Equipment");
         break;
       case "markets":
+        console.log("Navigating to Markets");
         setActiveTab("markets");
         break;
       default:
