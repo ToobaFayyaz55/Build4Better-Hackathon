@@ -17,6 +17,11 @@
         "backgroundImage": "./assets/images/android-icon-background.png",
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyA-3kYnBN8JyfanrTMtmJJxXednS4s0t6I"
+        }
+      },
       "predictiveBackGestureEnabled": false,
       "package": "com.hishaque06.Build4BetterHackathon"
     },
@@ -45,7 +50,6 @@
       "eas": {
         "projectId": "a1d37a33-67a5-4fde-9c78-a0b647abff56"
       }
-    },
-    "owner": "raafiafatimaz6"
+    }
   }
 }
